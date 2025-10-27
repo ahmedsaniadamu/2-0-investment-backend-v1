@@ -73,9 +73,9 @@ export const forgotPassword = async (req, res) => {
     if (!email) return res.status(400).json({ message: "Email is required" });
     const investor = await Investors.findOne({ where: { email } });
     if (!investor) return res.status(404).json({ message: "Investor not found" });
-    if(!investor.isVerified) return res.status(400).json({ 
-      message: "Investor is not verified. verify your account to initiate password reset"
-     });
+    // if(!investor.isVerified) return res.status(400).json({ 
+    //   message: "Investor is not verified. verify your account to initiate password reset"
+    //  });
     // Generate OTP
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
