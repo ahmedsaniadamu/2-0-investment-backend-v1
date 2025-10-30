@@ -8,6 +8,8 @@ export const createPlan = async (req, res) => {
     const { name, description, minDeposit, maxDeposit, roi } = req.body;
     if(!name || !description || !minDeposit || !maxDeposit || !roi) return res.status(400)
         .json({ success: false, message: "All fields are required" });
+    const isExist = await Plan.findOne({ where: { name } });
+    if (isExist) return res.status(400).json({ success: false, message: "Plan already exists" });
     const plan = await Plan.create({ name, description, minDeposit, maxDeposit, roi });
     res.status(201).json({ success: true, data: plan });
   } catch (error) {

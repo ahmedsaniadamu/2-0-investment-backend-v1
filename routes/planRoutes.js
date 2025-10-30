@@ -1,13 +1,15 @@
 import express from 'express';
+import isAdmin from '../middleware/isAdmin.js';
+import isAuth from '../middleware/auth.js';
 
 const router = express.Router();
 
 import { createPlan, getPlans, getPlanById, updatePlan, deletePlan } from '../controllers/planController.js' 
 
-router.post("/", createPlan);
+router.post("/", isAuth, isAdmin, createPlan);
 router.get("/", getPlans);
-router.get("/:id", getPlanById);
-router.patch("/:id", updatePlan);
-router.delete("/:id", deletePlan);
+router.get("/:id", isAuth, isAdmin ,getPlanById);
+router.patch("/:id", isAuth, isAdmin, updatePlan);
+router.delete("/:id", isAuth, isAdmin, deletePlan);
 
 export default router;
