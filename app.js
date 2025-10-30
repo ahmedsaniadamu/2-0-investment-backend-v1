@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./routes/authRoutes.js";
+import plansRoutes from "./routes/planRoutes.js";
 import cors from "cors";
 // import groupRoutes from "./routes/groupRoutes.js";
 // import surveyRoutes from "./routes/surveyRoutes.js";
@@ -12,7 +13,7 @@ app.use(cors());
 app.use(express.json());
  
  app.use("/auth", authRoutes);
-// app.use("/group", auth, groupRoutes);
+ app.use("/admin/plans", plansRoutes );
 // app.use("/survey", auth, surveyRoutes);
 // app.use('/questions', auth, questionsRoutes);
 
