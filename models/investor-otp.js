@@ -2,9 +2,15 @@
 
 export default (sequelize, DataTypes) => {
   const InvestorOtps = sequelize.define('InvestorOtps', {
-    id: {
+    index: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
+    },
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true,
       primaryKey: true,
     },
     investorId: {

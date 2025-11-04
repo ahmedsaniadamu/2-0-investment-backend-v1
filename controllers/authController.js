@@ -13,7 +13,7 @@ const { Investors, InvestorOtps } = db;
 export const verifyOtp = async (req, res) => {
   try{
     const { investorId, otp, type } = req.body;
-    const user = await Investors.findOne({ where: { uuid: investorId } });
+    const user = await Investors.findOne({ where: { id: investorId } });
     if (!user) return res.status(400).json({ message: 'Investor not found' });
     const investorOtp = await InvestorOtps.findOne({ where: { investorId: user?.id, otp } });
     if (!investorOtp) return res.status(400).json({ message: 'Invalid OTP' });
@@ -26,7 +26,7 @@ export const verifyOtp = async (req, res) => {
     const token = jwt.sign({ id: user?.dataValues?.id, email: user?.dataValues?.email, role: user?.dataValues?.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
     const data = type === 'signup' || type === 'login' ? {token,
       user: { 
-            id: user.uuid, name: user.name, 
+            id: user.id, name: user.name, 
             email: user.email, role: user.role
         },} : {}
     return res.status(200).json({ 
@@ -92,7 +92,7 @@ export const forgotPassword = async (req, res) => {
       template: forgotPasswordEmailTemplate
     });
     return res.status(200).json({
-      user: { id: investor.uuid, email: investor.email },
+      user: { id: investor.id, email: investor.email },
       message: `A password reset OTP has been sent to ${email}`,
     });
   } catch (error) {
@@ -117,7 +117,7 @@ export const resetPassword = async (req, res) => {
       message: "Password has been reset successfully",
       token,
       user: { 
-            id: investor.uuid, name: investor.name, 
+            id: investor.id, name: investor.name, 
             email: investor.email, role: investor.role
         }
     });
@@ -147,11 +147,11 @@ export const signup = async (req, res) => {
     await InvestorOtps.create({ investorId: user?.dataValues?.id, otp, expiresAt });
     // Send OTP via Gmail
     await sendMail({email, otp, user});
-    const {uuid, ...investor} = user?.dataValues
+    const {id, ...investor} = user?.dataValues
      res.status(201).json({ 
         message: `Investor account created successfully 
         and OTP sent to ${email} for verification`, 
-        user: {...investor, id: uuid} 
+        user: {...investor, id: id} 
     });
     } catch(error){
         res.status(400).json({ error: error.message });
@@ -170,7 +170,7 @@ export const login = async (req, res) => {
         message: 'Login successful', 
         token, 
         user: { 
-            id: user.uuid, name: user.name, 
+            id: user.id, name: user.name, 
             email: user.email, role: user.role,
             isVerified: user.isVerified
         } });

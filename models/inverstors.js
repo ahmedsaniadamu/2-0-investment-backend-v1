@@ -1,15 +1,15 @@
 export default (sequelize, DataTypes) => {
   const Investor = sequelize.define("Investors", {
-    id: {
+    index: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
     },
-    uuid: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
-      unique: true
+      unique: true,
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,

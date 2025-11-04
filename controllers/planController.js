@@ -67,3 +67,14 @@ export const deletePlan = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getPlanInvestments = async (req, res) => {
+  try {
+    const plan = await Plan.findByPk(req.params.id);
+    if (!plan) return res.status(404).json({ success: false, message: "Plan not found" });
+    const investments = await plan.getInvestments();
+    res.status(200).json({ success: true, data: investments });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
