@@ -1,23 +1,25 @@
 import { paginate } from "../helpers/pagination.js";
 import { db } from "../models/index.js";
+import { parseError } from "../helpers/parseError.js";
 
 const {Plan} = db;
 
-export const createPlan = async (req, res) => {
+export const createPlan = async (req, res, next) => {
   try {
     const { name, description, minDeposit, maxDeposit, roi } = req.body;
-    if(!name || !description || !minDeposit || !maxDeposit || !roi) return res.status(400)
-        .json({ success: false, message: "All fields are required" });
+    if(!name || !description || !minDeposit || !maxDeposit || !roi) return parseError(400, "All fields are required", next);
+    
     const isExist = await Plan.findOne({ where: { name } });
-    if (isExist) return res.status(400).json({ success: false, message: "Plan already exists" });
+    if (isExist) return parseError(400, "Plan already exists", next);
+    
     const plan = await Plan.create({ name, description, minDeposit, maxDeposit, roi });
     res.status(201).json({ success: true, data: plan });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-export const getPlans = async (req, res) => {
+export const getPlans = async (req, res, next) => {
   try {
     const result = await paginate(Plan, req, {
       searchable: ["name", "description"], 
@@ -26,55 +28,54 @@ export const getPlans = async (req, res) => {
 
     res.status(200).json(result);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
-export const getPlanById = async (req, res) => {
+export const getPlanById = async (req, res, next) => {
   try {
     const plan = await Plan.findByPk(req.params.id);
-    if (!plan) return res.status(404).json({ success: false, message: "Plan not found" });
+    if (!plan) return parseError(404, "Plan not found", next);
     res.status(200).json({ success: true, data: plan });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-// UPDATE
-export const updatePlan = async (req, res) => {
+export const updatePlan = async (req, res, next) => {
   try {
     const plan = await Plan.findByPk(req.params.id);
-    if(!req.body.name || !req.body.description || !req.body.minDeposit || !req.body.maxDeposit || !req.body.roi) return res.status(400)
-        .json({ success: false, message: "All fields are required" });
-    if (!plan) return res.status(404).json({ success: false, message: "Plan not found" });
+    if(!req.body.name || !req.body.description || !req.body.minDeposit || !req.body.maxDeposit || !req.body.roi) return parseError(400, "All fields are required", next);
+    
+    if (!plan) return parseError(404, "Plan not found", next);
 
     await plan.update(req.body);
     res.status(200).json({ success: true, data: plan });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-export const deletePlan = async (req, res) => {
+export const deletePlan = async (req, res, next) => {
   try {
     const plan = await Plan.findByPk(req.params.id);
-    if (!plan) return res.status(404).json({ success: false, message: "Plan not found" });
+    if (!plan) return parseError(404, "Plan not found", next);
 
     await plan.destroy();
     res.status(200).json({ success: true, message: "Plan deleted successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
-export const getPlanInvestments = async (req, res) => {
+export const getPlanInvestments = async (req, res, next) => {
   try {
     const plan = await Plan.findByPk(req.params.id);
-    if (!plan) return res.status(404).json({ success: false, message: "Plan not found" });
+    if (!plan) return parseError(404, "Plan not found", next);
+    
     const investments = await plan.getInvestments();
     res.status(200).json({ success: true, data: investments });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
-}
+};

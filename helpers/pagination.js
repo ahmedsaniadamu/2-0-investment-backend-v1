@@ -1,4 +1,3 @@
-
 export const paginate = async (model, req, options = {}) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -7,7 +6,6 @@ export const paginate = async (model, req, options = {}) => {
 
   const where = options.where || {};
 
-  // If search is enabled and searchable fields are defined
   if (search && options.searchable && options.searchable.length > 0) {
     where[Symbol.for("or")] = options.searchable.map((field) => ({
       [field]: { [Symbol.for("like")]: `%${search}%` },
@@ -19,6 +17,8 @@ export const paginate = async (model, req, options = {}) => {
     limit,
     offset,
     order: options.order || [["createdAt", "DESC"]],
+    include: options.include || [], 
+    attributes: options.attributes || {}, 
   });
 
   const totalPages = Math.ceil(count / limit);

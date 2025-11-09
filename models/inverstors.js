@@ -46,6 +46,11 @@ export default (sequelize, DataTypes) => {
       as: 'otps',
       onDelete: 'CASCADE',
     });
+    Investor.hasMany(models.Investment, {
+      foreignKey: 'investorId',
+      as: 'investments',
+      onDelete: 'CASCADE',
+    });
   };
 
   return Investor;
