@@ -8,7 +8,7 @@ const storage = new CloudinaryStorage({
     folder: "documents",
     type: 'upload',
      access_mode: 'public',
-    allowed_formats: ["jpg", "jpeg", "png", "pdf"],
+     allowed_formats: ["jpg", "jpeg", "png", "pdf"],
   },
 });
 
