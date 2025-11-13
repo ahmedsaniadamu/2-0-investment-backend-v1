@@ -7,6 +7,7 @@ import adminInvestmentRoutes from "./routes/admin/investmentRoutes.js";
 import transactionRoutes from './routes/investor/transactionRoutes.js'
 import adminTransactionRoutes from './routes/admin/transactionRoutes.js'
 import adminInvestorsRoutes from './routes/admin/investorsRoutes.js'
+import adminDashboardRoutes from './routes/admin/dashboardRoutes.js'
 import adminKycRoutes from './routes/admin/kycRoutes.js'
 import investorKycRoutes from './routes/investor/kycRoutes.js'
 import investorDashboardRoutes from './routes/investor/dashboardRoutes.js'
@@ -38,6 +39,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
  app.use('/admin/transactions', isAuth, isAdmin, adminTransactionRoutes);
  app.use('/admin/investors', isAuth, isAdmin, adminInvestorsRoutes);
  app.use('/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
+ app.use('/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
  // global error handler
  app.use(errorHandler);
 app.listen(1001, () => console.log("Server running on port 1001"));

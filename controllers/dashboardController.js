@@ -3,7 +3,7 @@ import { parseError } from "../helpers/parseError.js";
 import { calculateInvestorProfit } from "../helpers/calculateInvestorProfit.js";
 import { Op } from "sequelize";
 
-const { Investment, Transaction, Plan } = db;
+const { Investment, Transaction, Plan, Investors } = db;
 
 export const getInvestorSummary = async (req, res, next) => {
   try {
@@ -175,6 +175,116 @@ export const getPortfolioAllocation = async (req, res, next) => {
     }));
 
     res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAdminDashboardSummary = async (req, res, next) => {
+  try {
+    const totalPlans = await Plan.count();
+    const totalInvestors = await Investors.count({ where: { role: "investor" } });
+    const totalDeposits = await Transaction.sum("amount", {
+      where: { type: "deposit" },
+    });
+    const totalWithdrawals = await Transaction.sum("amount", {
+      where: { type: "withdraw" },
+    });
+    const totalInvestments = await Investment.sum("amount");
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalPlans: totalPlans || 0,
+        totalInvestors: totalInvestors || 0,
+        totalDeposits: totalDeposits || 0,
+        totalWithdrawals: totalWithdrawals || 0,
+        totalInvestments: totalInvestments || 0,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getRoiPerPlan = async (req, res, next) => {
+  try {
+    const plans = await Plan.findAll({
+      attributes: ["name", "roi"],
+      order: [["createdAt", "ASC"]],
+    });
+
+    if (!plans.length)
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No plans found",
+      });
+
+    const result = plans.map((plan) => {
+      let avgRoi = 0;
+      if (plan.roi.includes("-")) {
+        const [min, max] = plan.roi.replace("%", "").split("-").map(Number);
+        avgRoi = (min + max) / 2;
+      } else {
+        avgRoi = parseFloat(plan.roi.replace("%", "")) || 0;
+      }
+
+      return {
+        planName: plan.name,
+        roi: avgRoi,
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getInvestmentDistribution = async (req, res, next) => {
+  try {
+    const investments = await Investment.findAll({
+      include: [{ model: Plan, attributes: ["name"], as: "plan" }],
+    });
+
+    if (!investments.length) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No investments found",
+      });
+    }
+    // Calculate total investment amount
+    const totalAmount = investments.reduce(
+      (sum, inv) => sum + parseFloat(inv.amount || 0),
+      0
+    );
+    // Group investments by plan
+    const distribution = {};
+    investments.forEach((inv) => {
+      const planName = inv.plan?.name || "Unknown";
+      distribution[planName] = (distribution[planName] || 0) + parseFloat(inv.amount || 0);
+    });
+    // Convert to percentage distribution
+    const result = Object.entries(distribution).map(([planName, amount]) => ({
+      planName,
+      amount: Number(amount.toFixed(2)),
+      percentage: Number(((amount / totalAmount) * 100).toFixed(2)),
+    }));
+    // Sort by amount descending
+    result.sort((a, b) => b.amount - a.amount);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        total: Number(totalAmount.toFixed(2)),
+        distribution: result,
+      },
+    });
   } catch (error) {
     next(error);
   }
