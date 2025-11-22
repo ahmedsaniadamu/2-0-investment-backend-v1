@@ -3,14 +3,19 @@ import { db } from "../models/index.js";
 import { literal } from "sequelize";
 import { parseError } from "../helpers/parseError.js";
 
-const {Investors, Investment } = db;
+const {Investors, Investment, InvestorKycRequest } = db;
  
 export const getInvestors = async (req, res, next) => {
   try {
     const investors = await paginate(Investors, req, {
       searchable: ["name", "email"],
       order: [["createdAt", "DESC"]],
+      where: {role: 'investor'},
+      include: [
+        { model: InvestorKycRequest, as: 'kycRequests', attributes: ['status'] }
+      ],
       attributes: {
+        exclude: ['password', 'index', 'role'], 
         include: [
           [
             literal(`(

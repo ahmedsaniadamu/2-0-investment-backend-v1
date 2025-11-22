@@ -23,23 +23,23 @@ import { errorHandler } from "./middleware/errorHandler.js";
  app.use(cors());
  app.use(express.json());
  // unaunthenticated routes
- app.get('/plans', getPlans)
+ app.get('/api/plans', getPlans)
  //unauthenticated routes end
- app.use("/auth", authRoutes);
- app.use('/upload', isAuth, uploadRoutes)
+ app.use("/api/auth", authRoutes);
+ app.use('/api/upload', isAuth, uploadRoutes)
  //investor routes
- app.use('/investor/dashboard', isAuth, isInvestor, investorDashboardRoutes);
- app.use('/investor/investments', isAuth, isInvestor, investmentRoutes);
- app.use('/investor/transactions', isAuth, isInvestor, transactionRoutes);
- app.use('/investor/profile', isAuth, isInvestor, profileRoutes);
- app.use('/investor/kyc', isAuth, isInvestor, investorKycRoutes);
+ app.use('/api/investor/dashboard', isAuth, isInvestor, investorDashboardRoutes);
+ app.use('/api/investor/api/investments', isAuth, isInvestor, investmentRoutes);
+ app.use('/api/investor/transactions', isAuth, isInvestor, transactionRoutes);
+ app.use('/api/investor/profile', isAuth, isInvestor, profileRoutes);
+ app.use('/api/investor/kyc', isAuth, isInvestor, investorKycRoutes);
  //admin routes
- app.use("/admin/plans", isAuth, isAdmin, plansRoutes );
- app.use('/admin/investments', isAuth, isAdmin, adminInvestmentRoutes);
- app.use('/admin/transactions', isAuth, isAdmin, adminTransactionRoutes);
- app.use('/admin/investors', isAuth, isAdmin, adminInvestorsRoutes);
- app.use('/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
- app.use('/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
+ app.use("/api/admin/plans", isAuth, isAdmin, plansRoutes );
+ app.use('/api/admin/investments', isAuth, isAdmin, adminInvestmentRoutes);
+ app.use('/api/admin/transactions', isAuth, isAdmin, adminTransactionRoutes);
+ app.use('/api/admin/investors', isAuth, isAdmin, adminInvestorsRoutes);
+ app.use('/api/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
+ app.use('/api/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
  // global error handler
  app.use(errorHandler);
 app.listen(1001, () => console.log("Server running on port 1001"));

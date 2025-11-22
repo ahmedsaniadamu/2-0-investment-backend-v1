@@ -40,6 +40,10 @@ export default (sequelize, DataTypes) => {
   // Association
   Profile.associate = (models) => {
     Profile.belongsTo(models.Investors, { foreignKey: "investorId", as: "investor" });
+    Profile.belongsTo(models.InvestorKycRequest, { 
+      foreignKey: "investorId", as: "investorKycRequest",
+      targetKey: "investorId",
+    });
   };
 
   return Profile;

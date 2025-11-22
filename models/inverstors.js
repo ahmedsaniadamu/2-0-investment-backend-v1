@@ -51,6 +51,11 @@ export default (sequelize, DataTypes) => {
       as: 'investments',
       onDelete: 'CASCADE',
     });
+    Investor.hasOne(models.InvestorKycRequest, {
+      foreignKey: 'investorId',
+      as: 'kycRequests',
+      onDelete: 'CASCADE',
+    });
   };
 
   return Investor;

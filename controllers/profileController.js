@@ -2,18 +2,26 @@ import { db } from "../models/index.js";
 import bcrypt from 'bcrypt';
 import { parseError } from "../helpers/parseError.js";
 
-const {Profile, Investors} = db;
+const {Profile, Investors, InvestorKycRequest} = db;
 
 export const getProfile = async (req, res, next) => {
     try {
         const result = await Profile.findOne({
             where: {investorId: req.params.id},
+            attributes: {
+              exclude: ['kycStatus']
+            },
             include: [
                 {
                   model: Investors,
                   as: "investor",
                   attributes: { exclude: ['password'] }
                 },
+                {
+                  model: InvestorKycRequest,
+                  as: "investorKycRequest",
+                  attributes: { exclude: ['createdAt', 'updatedAt', 'documents', 'investorId'] }
+                }
             ],
         });
         res.status(200).json(result);

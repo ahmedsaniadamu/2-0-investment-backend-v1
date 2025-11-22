@@ -5,7 +5,7 @@ import { sendMail } from "../services/authService.js";
 import { transactionApprovedEmailTemplate, transactionRejectedEmailTemplate } from "../templates/transaction-status-template.js";
 import { parseError } from "../helpers/parseError.js";
 
-const {Transaction, Plan, Investors} = db;
+const {Transaction, Plan, Investors, Investment} = db;
 
 export const getInvestorTransactions = async (req, res, next) => {
   try {
@@ -13,7 +13,7 @@ export const getInvestorTransactions = async (req, res, next) => {
       searchable: ["investmentGoal"], 
       order: [["createdAt", "DESC"]],
       where: { investorId: req.params.id },
-      attributes: { exclude: ['reason'] }
+      attributes: { exclude: ['reason', 'isWithdrawalRequest'] }
     });
 
     res.status(200).json(transactions);
@@ -24,6 +24,7 @@ export const getInvestorTransactions = async (req, res, next) => {
 
 export const getTransactions = async (req, res, next) => {
    const { status, paymentMethod, startDateFrom, startDateTo, createdFrom, createdTo } = req.query;
+   const type = req.query.type || ''
     const filters = {};
     if (status) {
       filters.status = status;
@@ -54,7 +55,7 @@ export const getTransactions = async (req, res, next) => {
     const transactions = await paginate(Transaction, req, {
       searchable: ["investmentGoal"], 
       order: [["createdAt", "DESC"]],
-      where: filters,
+      where: type ? type === 'withdraw' ? {...filters , type, isWithdrawalRequest: true } : {...filters , type  } : filters,
       include: [
         {
           model: Investors,
@@ -108,6 +109,7 @@ export const reviewTransaction = async (req, res, next) => {
       const { reason } = req.body;
       if(!reason) return parseError(400, "Reason for rejection is required", next);
       await transaction.update({ reason, status });
+      await Investment.update({ status: 'cancelled' }, { where: { id: transaction.investmentId } });
        await  sendMail({
                   fields: { 
                        name: investor?.dataValues?.name || '', 
@@ -120,6 +122,7 @@ export const reviewTransaction = async (req, res, next) => {
     }
    else  {
       await transaction.update({ status });
+      await Investment.update({ status: 'active' }, { where: { id: transaction.investmentId } });
       await  sendMail({
         fields: { 
               name: investor?.dataValues?.name || '', 
@@ -138,7 +141,7 @@ export const reviewTransaction = async (req, res, next) => {
 
 export const getTransactionSummary = async (req, res, next) => {
   try {
-    const [totalTransactions, approved, pending, rejected] = await Promise.all(
+    const [totalTransactions, approved, pending, rejected, withdrawalRequest] = await Promise.all(
       req.params.id ?
        [ Transaction.count({where: {investorId: req.params.id}}),
         Transaction.count({where: {investorId: req.params.id, status: "approved"}}),
@@ -148,14 +151,24 @@ export const getTransactionSummary = async (req, res, next) => {
       [Transaction.count(),
       Transaction.count({ where: { status: "approved" } }),
       Transaction.count({ where: { status: "pending" } }),
-      Transaction.count({ where: { status: "rejected" } }),]
+      Transaction.count({ where: { status: "rejected" } }),
+      Transaction.count({ where: { isWithdrawalRequest: true, type: "withdraw" } }),
+    ]
     );
-
+    if (req.params.id) {
+      return res.status(200).json({
+        totalTransactions,
+        approved,
+        pending,
+        rejected,
+      });
+    }
     res.status(200).json({
       totalTransactions,
       approved,
       pending,
       rejected,
+      withdrawalRequest
     });
   } catch (error) {
     next(error);

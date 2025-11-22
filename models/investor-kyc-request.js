@@ -32,6 +32,10 @@ export default (sequelize, DataTypes) => {
       foreignKey: "investorId",
       as: "investor",
     });
+    InvestorKycRequest.hasOne(models.Profile, {
+      foreignKey: 'investorId',
+      as: 'investorKycRequest',
+    });
   };
 
   return InvestorKycRequest;

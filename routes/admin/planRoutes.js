@@ -4,11 +4,12 @@ const router = express.Router();
 
 import {
     createPlan, getPlans, getPlanById, updatePlan,
-    deletePlan, getPlanInvestments
+    deletePlan, getPlanInvestments,
+    getPlansAdmin
 } from '../../controllers/planController.js';
 
 router.post("/", createPlan);
-router.get("/", getPlans);
+router.get("/", getPlansAdmin);
 router.get("/investments/:id", getPlanInvestments);
 router.get("/:id",getPlanById);
 router.patch("/:id", updatePlan);

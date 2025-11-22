@@ -9,6 +9,7 @@ import {
 
 router.get("/",getTransactions);
 router.get("/summary",getTransactionSummary);
+router.get("/:id/summary",getTransactionSummary);
 router.get("/:id",getTransactionById);
 router.patch("/review/:id",reviewTransaction);
 

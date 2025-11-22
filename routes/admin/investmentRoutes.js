@@ -1,14 +1,17 @@
 import express from 'express';
-import isAuth from '../../middleware/auth.js';
 import {
-getInvestments,
-getInvestorInvestments,
+    getInvestments,
+    getInvestmentsSummary,
+    getInvestorInvestments,
+    getInvestorInvestmentsSummary,
 } from '../../controllers/investmentController.js';
-import isAdmin from '../../middleware/isAdmin.js';
 
 const router = express.Router();
 
 router.get("/", getInvestments);
+router.get("/summary", getInvestmentsSummary);
+router.get("/:id/summary", getInvestorInvestmentsSummary);
 router.get("/:id", getInvestorInvestments)
+
 
 export default router;

@@ -29,6 +29,10 @@ export default (sequelize, DataTypes) => {
     type: DataTypes.STRING,
     allowNull: true,
     },
+    isWithdrawalRequest: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.ENUM("pending", "approved", "rejected"),
       defaultValue: "pending",

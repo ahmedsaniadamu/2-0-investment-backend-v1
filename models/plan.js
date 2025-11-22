@@ -15,6 +15,7 @@ export default (sequelize, DataTypes) => {
     minDeposit: DataTypes.DECIMAL(15, 2),
     maxDeposit: DataTypes.DECIMAL(15, 2),
     roi: DataTypes.STRING,
+    visibility: DataTypes.BOOLEAN,
   });
   Plan.associate = (models) => {
     Plan.hasMany(models.Investment, { foreignKey: 'planId', as: 'investments' });
