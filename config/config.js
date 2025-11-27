@@ -1,3 +1,30 @@
+// import dotenv from "dotenv";
+// dotenv.config();
+
+// export default {
+//   development: {
+//     username: process.env.DB_USERNAME,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME_DEV,
+//     host: process.env.DB_HOST,
+//     dialect: process.env.DB_DIALECT
+//   },
+//   test: {
+//     username: process.env.DB_USERNAME,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME_TEST,
+//     host: process.env.DB_HOST,
+//     dialect: process.env.DB_DIALECT
+//   },
+//   production: {
+//     username: process.env.DB_USERNAME,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME_PROD,
+//     host: process.env.DB_HOST,
+//     dialect: process.env.DB_DIALECT
+//   }
+// };
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -7,20 +34,41 @@ export default {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME_DEV,
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
+    port: process.env.DB_PORT || 5432,
+    dialect: process.env.DB_DIALECT,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   },
   test: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME_TEST,
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
+    port: process.env.DB_PORT || 5432,
+    dialect: process.env.DB_DIALECT,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   },
   production: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME_PROD,
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
+    port: process.env.DB_PORT || 5432,
+    dialect: process.env.DB_DIALECT,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   }
 };
