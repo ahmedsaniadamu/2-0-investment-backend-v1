@@ -121,6 +121,7 @@ export const getInvestmentVsProfit = async (req, res, next) => {
       grouped[planName].push(inv);
     });
     const result = Object.keys(grouped).map((planName) => {
+    
       const planInvestments = grouped[planName];
 
       const totalInvestment = planInvestments.reduce(

@@ -1,10 +1,9 @@
 import express from 'express';
-import isAuth from '../../middleware/auth.js';
-import isInvestor from '../../middleware/isInvestor.js';
 const router = express.Router();
 
-import { uploadDocument } from '../../controllers/kycDocumentController.js';
+import { getKycDocuments, uploadDocument } from '../../controllers/kycDocumentController.js';
 
-router.post("/verify-kyc", isAuth, isInvestor, uploadDocument);
+router.get("/documents",  getKycDocuments);
+router.post("/verify-kyc",uploadDocument);
 
 export default router;

@@ -20,7 +20,7 @@ export const getProfile = async (req, res, next) => {
                 {
                   model: InvestorKycRequest,
                   as: "investorKycRequest",
-                  attributes: { exclude: ['createdAt', 'updatedAt', 'documents', 'investorId'] }
+                  attributes: { exclude: ['createdAt', 'updatedAt', 'investorId'] }
                 }
             ],
         });
@@ -73,7 +73,7 @@ export const updatePassword = async (req, res, next) => {
     const isMatch = await bcrypt.compare(currentPassword, investor.password);
 
     if (!isMatch) {
-      return parseError(401, "Current password is incorrect", next);
+      return parseError(400, "Current password is incorrect", next);
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

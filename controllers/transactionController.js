@@ -13,7 +13,10 @@ export const getInvestorTransactions = async (req, res, next) => {
       searchable: ["investmentGoal"], 
       order: [["createdAt", "DESC"]],
       where: { investorId: req.params.id },
-      attributes: { exclude: ['reason', 'isWithdrawalRequest'] }
+      attributes: { exclude: ['reason', 'isWithdrawalRequest'] },
+      include: [
+        { model: Plan, attributes: ['name'], as: 'Plan' }
+      ]
     });
 
     res.status(200).json(transactions);
