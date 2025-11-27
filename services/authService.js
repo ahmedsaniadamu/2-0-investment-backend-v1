@@ -11,13 +11,25 @@ export const sendMail = async ({
   email, user, otp, subject, template, name, 
   fields= null,
 }) => {
+    //   const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     user: process.env.GMAIL_USER,
+    //     pass: process.env.GMAIL_PASS,
+    //   },
+    // });
       const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, 
+        auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        }
+      });
    
     const template_ = Handlebars.compile(template || registrationEmailTemplate);
     const rawTemplate =  template_(fields || { 
