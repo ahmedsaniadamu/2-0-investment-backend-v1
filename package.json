@@ -9,6 +9,7 @@
     "migrate": "npx sequelize-cli db:migrate",
     "db:drop": "npx sequelize-cli db:drop",
     "db:create": "npx sequelize-cli db:create",
+    "undo-all": "npx sequelize-cli db:migrate:undo:all",
     "db:reset": "npm run db:drop && npm run db:create && npm run migrate"
   },
   "keywords": [],

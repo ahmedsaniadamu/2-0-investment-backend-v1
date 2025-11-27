@@ -163,7 +163,7 @@ export const login = async (req, res, next) => {
     try{
       const { email, password } = req.body;
       const user = await Investors.findOne({ where: { email } });
-    if (!user) return parseError(404, 'Investor not found', next);
+    if (!user) return parseError(404, 'Invalid email, please sign up if you don\'t have an account', next);
     
      const valid = await bcrypt.compare(password, user.password);
     if (!valid) return parseError(400, 'Invalid password', next);
