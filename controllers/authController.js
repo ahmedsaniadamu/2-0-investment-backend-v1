@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { db } from "../models/index.js";
 import otpGenerator from "otp-generator";
 import { sendMail } from "../services/authService.js";
-import { forgotPasswordEmailTemplate, resendOtpEmailTemplate } from "../templates/registration-template.js";
+import { forgotPasswordEmailTemplate, registrationEmailTemplate, resendOtpEmailTemplate } from "../templates/registration-template.js";
 import { parseError } from "../helpers/parseError.js";
 
 dotenv.config();
@@ -148,7 +148,7 @@ export const signup = async (req, res, next) => {
     
     await InvestorOtps.create({ investorId: user?.dataValues?.id, otp, expiresAt });
     
-    await sendMail({email, otp, user});
+    await sendMail({email, otp, user, template: registrationEmailTemplate});
     const {id, ...investor} = user?.dataValues
      res.status(201).json({ 
         message: `Investor account created successfully and OTP sent to ${email} for verification`, 
