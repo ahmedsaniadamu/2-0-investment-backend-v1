@@ -25,8 +25,8 @@ export const getProfile = async (req, res, next) => {
             ],
         });
         if(!result){
-           let profile = Investors.findOne({where: {id: req.params.id}});
-            res.status(200).json({message: "Profile not found", investor: profile});
+           let profile = await Investors.findOne({where: { id: req.params.id}});
+            res.status(200).json({message: "Default profile retrieved", investor: profile});
         }
         else res.status(200).json(result);
     } catch (error) {
