@@ -40,7 +40,7 @@ export const updateProfile = async (req, res, next) => {
         
         const _profile = await Profile.findOne({where: {investorId: req.params.id}});
         if(!_profile){
-           const profile = await Profile.create(req.body);
+           const profile = await Profile.create({...req.body, investorId: req.params.id});
             res.status(200).json({message: "Profile created successfully", profile});
         }
         else {
