@@ -26,14 +26,14 @@ export const getPlans = async (req, res, next) => {
       searchable: ["name", "description"], 
       order: [["createdAt", "DESC"]],
       attributes: {
-        exclude: ['visibility'],
+       // exclude: ['visibility'],
         include: [
           [ cast( fn("COUNT", col("planId")), "INTEGER"),
             "investmentCount"
           ]
         ]
       },
-      where: { visibility: true },
+      //where: { visibility: true },
       include: [
         {
           model: Investment, as: "investments",

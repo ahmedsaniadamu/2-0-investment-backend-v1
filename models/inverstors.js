@@ -29,6 +29,11 @@ export default (sequelize, DataTypes) => {
       defaultValue: "investor",
       allowNull: false,
     },
+    userType: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "investor",
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,

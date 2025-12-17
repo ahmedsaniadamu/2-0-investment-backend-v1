@@ -7,12 +7,14 @@ import {
     deletePlan, getPlanInvestments,
     getPlansAdmin
 } from '../../controllers/planController.js';
+import { hasPermission } from '../../middleware/hasPermissions.js';
+import { PERMISSIONS } from '../../helpers/permissionsMap.js';
 
-router.post("/", createPlan);
-router.get("/", getPlansAdmin);
-router.get("/investments/:id", getPlanInvestments);
-router.get("/:id",getPlanById);
-router.patch("/:id", updatePlan);
-router.delete("/:id", deletePlan);
+router.post("/", hasPermission(PERMISSIONS.PLANS.CREATE), createPlan);
+router.get("/", hasPermission(PERMISSIONS.PLANS.VIEW), getPlansAdmin);
+router.get("/investments/:id", hasPermission(PERMISSIONS.PLANS.VIEW), getPlanInvestments);
+router.get("/:id", hasPermission(PERMISSIONS.PLANS.VIEW), getPlanById);
+router.patch("/:id", hasPermission(PERMISSIONS.PLANS.UPDATE), updatePlan);
+//router.delete("/:id", deletePlan);
 
 export default router;

@@ -9,7 +9,7 @@ import { parseError } from "../helpers/parseError.js";
 
 dotenv.config();
 
-const { Investors, InvestorOtps } = db;
+const { Investors, InvestorOtps, Permission } = db;
 
 export const verifyOtp = async (req, res, next) => {
   try{
@@ -159,25 +159,83 @@ export const signup = async (req, res, next) => {
     }
 };
 
+// export const login = async (req, res, next) => {
+//     try{
+//       const { email, password } = req.body;
+//       const user = await Investors.findOne({ where: { email } });
+//     if (!user) return parseError(404, 'Invalid email, please sign up if you don\'t have an account', next);
+    
+//      const valid = await bcrypt.compare(password, user.password);
+//     if (!valid) return parseError(400, 'Invalid password', next);
+    
+//     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+//      res.json({ 
+//         message: 'Login successful', 
+//         token, 
+//         user: { 
+//             id: user.id, name: user.name, 
+//             email: user.email, role: user.role,
+//             isVerified: user.isVerified
+//         } });
+//     } catch(error){
+//         next(error);
+//     }
+// }
+
 export const login = async (req, res, next) => {
-    try{
-      const { email, password } = req.body;
-      const user = await Investors.findOne({ where: { email } });
-    if (!user) return parseError(404, 'Invalid email, please sign up if you don\'t have an account', next);
-    
-     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return parseError(400, 'Invalid password', next);
-    
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-     res.json({ 
-        message: 'Login successful', 
-        token, 
-        user: { 
-            id: user.id, name: user.name, 
-            email: user.email, role: user.role,
-            isVerified: user.isVerified
-        } });
-    } catch(error){
-        next(error);
+  try {
+    const { email, password } = req.body;
+    const user = await Investors.findOne({
+      where: { email },
+      include: [
+        {
+          model: Permission,
+          as: "permissions",
+          attributes: ["name", "module"],
+          through: { attributes: [] },
+        },
+      ],
+    });
+    if (!user) {
+      return parseError(
+        404,
+        "Invalid email, please sign up if you don't have an account",
+        next
+      );
     }
-}
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      return parseError(400, "Invalid password", next);
+    }
+
+    const permissions = user.permissions.map(p => p.name);
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        userType: user.userType,
+        permissions,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    return res.json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        userType: user.userType,
+        isVerified: user.isVerified,
+        permissions: user.permissions,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -59,6 +59,9 @@ export const assignPermissions = async (req, res, next) => {
         if (!user) {
             return parseError(404, "User not found", next)
         }
+        if(user?.role === "investor") {
+            return parseError(400, "Investors are not allowed to assign permissions", next)
+        }
 
         const permissions = await Permission.findAll({
             where: { id: permissionIds }
@@ -74,6 +77,61 @@ export const assignPermissions = async (req, res, next) => {
             assigned: permissionIds
         });
 
+    } catch (error) {
+        return parseError(500, error.message, next);
+    }
+};
+
+export const getUserPermissions = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const user = await Investors.findByPk(userId, {
+            include: {
+                model: Permission, as: "permissions",
+                through: { attributes: [] }, 
+            },
+        });
+
+        if (!user) {
+            return parseError(404, "User not found", next);
+        }
+        if (user?.role === "investor") {
+            return parseError(400, "Investors are not allowed to view permissions", next);
+        }
+        return res.status(200).json({
+            message: "User permissions fetched successfully",
+            permissions: user.permissions || [],
+        });
+    } catch (error) {
+        return parseError(500, error.message, next);
+    }
+};
+
+
+export const updateUserPermissions = async (req, res, next) => {
+    try {
+        const { userId, permissionIds } = req.body;
+
+        if (!Array.isArray(permissionIds)) {
+            return parseError(400, "Permissions must be an array", next);
+        }
+        const user = await Investors.findByPk(userId);
+        if (!user) {
+            return parseError(404, "User not found", next);
+        }
+        if (user?.role === "investor") {
+            return parseError(400, "Investors are not allowed to update permissions", next);
+        }
+        const permissions = await Permission.findAll({ where: { id: permissionIds } });
+        if (permissions.length !== permissionIds.length) {
+            return parseError(404, "One or more permissions are invalid", next);
+        }
+        await user.setPermissions(permissions);
+
+        return res.json({
+            message: "User permissions updated successfully",
+            assigned: permissionIds,
+        });
     } catch (error) {
         return parseError(500, error.message, next);
     }
