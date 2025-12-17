@@ -25,7 +25,7 @@ export default (sequelize, DataTypes) => {
       allowNull: true,
     },
     role: {
-      type: DataTypes.ENUM("admin", "investor"),
+      type: DataTypes.ENUM("admin", "investor", "sub-admin"),
       defaultValue: "investor",
       allowNull: false,
     },
@@ -55,6 +55,11 @@ export default (sequelize, DataTypes) => {
       foreignKey: 'investorId',
       as: 'kycRequests',
       onDelete: 'CASCADE',
+    });
+    Investor.belongsToMany(models.Permission, {
+      through: "UserPermissions",
+      foreignKey: "userId",
+      as: "permissions"
     });
   };
 

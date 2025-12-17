@@ -10,6 +10,7 @@ import adminInvestorsRoutes from './routes/admin/investorsRoutes.js'
 import adminDashboardRoutes from './routes/admin/dashboardRoutes.js'
 import adminKycRoutes from './routes/admin/kycRoutes.js'
 import investorKycRoutes from './routes/investor/kycRoutes.js'
+import adminPermissionRoutes from './routes/admin/permissionRoutes.js'
 import investorDashboardRoutes from './routes/investor/dashboardRoutes.js'
 import uploadRoutes from './routes/shared/fileUploadRoutes.js'
 import cors from "cors";
@@ -18,6 +19,7 @@ import isAdmin from "./middleware/isAdmin.js";
 import isAuth from "./middleware/auth.js";
 import isInvestor from "./middleware/isInvestor.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -42,6 +44,7 @@ dotenv.config();
  app.use('/api/v1/admin/investors', isAuth, isAdmin, adminInvestorsRoutes);
  app.use('/api/v1/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
  app.use('/api/v1/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
+ app.use('/api/v1/admin/permission', isAuth, isAdmin, adminPermissionRoutes);
  // global error handler
  app.use(errorHandler);
 app.listen(process.env.SERVER_PORT, () => console.log(`erver running on port ${process.env.SERVER_PORT}`));
