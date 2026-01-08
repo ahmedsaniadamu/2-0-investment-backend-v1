@@ -19,34 +19,55 @@ import { getPlans } from "./controllers/planController.js";
 import isAdmin from "./middleware/isAdmin.js";
 import isAuth from "./middleware/auth.js";
 import isInvestor from "./middleware/isInvestor.js";
+import rateLimit from "express-rate-limit";
 import { errorHandler } from "./middleware/errorHandler.js";
-
+import helmet from "helmet";
 import dotenv from "dotenv";
+import compression from "compression";
 dotenv.config();
 
- const app = express();
- app.use(cors());
- app.use(express.json());
- // unaunthenticated routes
- app.get('/api/v1/plans', getPlans)
- //unauthenticated routes end
- app.use("/api/v1/auth", authRoutes);
- app.use('/api/v1/upload', isAuth, uploadRoutes)
- //investor routes
- app.use('/api/v1/investor/dashboard', isAuth, isInvestor, investorDashboardRoutes);
- app.use('/api/v1/investor/investments', isAuth, isInvestor, investmentRoutes);
- app.use('/api/v1/investor/transactions', isAuth, isInvestor, transactionRoutes);
- app.use('/api/v1/investor/profile', isAuth, isInvestor, profileRoutes);
- app.use('/api/v1/investor/kyc', isAuth, isInvestor, investorKycRoutes);
- //admin routes
- app.use("/api/v1/admin/plans", isAuth, isAdmin, plansRoutes );
- app.use('/api/v1/admin/investments', isAuth, isAdmin, adminInvestmentRoutes);
- app.use('/api/v1/admin/transactions', isAuth, isAdmin, adminTransactionRoutes);
- app.use('/api/v1/admin/investors', isAuth, isAdmin, adminInvestorsRoutes);
- app.use('/api/v1/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
- app.use('/api/v1/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
- app.use('/api/v1/admin/permission', isAuth, isAdmin, adminPermissionRoutes);
- app.use('/api/v1/admin/users', isAuth, isAdmin, adminUsersRoutes);
- // global error handler
- app.use(errorHandler);
-app.listen(process.env.SERVER_PORT, () => console.log(`erver running on port ${process.env.SERVER_PORT}`));
+const app = express();
+// security middleware
+app.use(helmet());
+const allowedOrigins = [
+    "https://2-0-investment.vercel.app",
+    "http://localhost:7000"
+];
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: "Too many requests, please try again later."
+});
+app.use('/api/v1', apiLimiter);
+app.use(compression());
+//-----------------//
+app.use(express.json({ limit: '2mb' }));
+// unaunthenticated routes
+app.get('/api/v1/plans', getPlans)
+//unauthenticated routes end
+app.use("/api/v1/auth", authRoutes);
+app.use('/api/v1/upload', isAuth, uploadRoutes)
+//investor routes
+app.use('/api/v1/investor/dashboard', isAuth, isInvestor, investorDashboardRoutes);
+app.use('/api/v1/investor/investments', isAuth, isInvestor, investmentRoutes);
+app.use('/api/v1/investor/transactions', isAuth, isInvestor, transactionRoutes);
+app.use('/api/v1/investor/profile', isAuth, isInvestor, profileRoutes);
+app.use('/api/v1/investor/kyc', isAuth, isInvestor, investorKycRoutes);
+//admin routes
+app.use("/api/v1/admin/plans", isAuth, isAdmin, plansRoutes);
+app.use('/api/v1/admin/investments', isAuth, isAdmin, adminInvestmentRoutes);
+app.use('/api/v1/admin/transactions', isAuth, isAdmin, adminTransactionRoutes);
+app.use('/api/v1/admin/investors', isAuth, isAdmin, adminInvestorsRoutes);
+app.use('/api/v1/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
+app.use('/api/v1/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
+app.use('/api/v1/admin/permission', isAuth, isAdmin, adminPermissionRoutes);
+app.use('/api/v1/admin/users', isAuth, isAdmin, adminUsersRoutes);
+// global error handler
+app.use(errorHandler);
+app.listen(process.env.SERVER_PORT, () => console.log(`Server running on port ${process.env.SERVER_PORT}`));
