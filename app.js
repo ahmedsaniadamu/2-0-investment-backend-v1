@@ -24,6 +24,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import compression from "compression";
+
 dotenv.config();
 
 const app = express();
@@ -48,6 +49,8 @@ app.use('/api/v1', apiLimiter);
 app.use(compression());
 //-----------------//
 app.use(express.json({ limit: '2mb' }));
+
+
 // unaunthenticated routes
 app.get('/api/v1/plans', getPlans)
 //unauthenticated routes end
