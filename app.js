@@ -24,10 +24,14 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import compression from "compression";
+import { stripeWebhook } from "./webhook/stripe.js";
 
 dotenv.config();
 
 const app = express();
+//stripe webhook
+stripeWebhook(app)
+
 // security middleware
 app.use(helmet());
 const allowedOrigins = [

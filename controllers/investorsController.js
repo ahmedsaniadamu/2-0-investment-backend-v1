@@ -110,7 +110,7 @@ export const createUser = async (req, res, next) => {
           await sendMail({
             fields: {name, email, password, role: userType}, 
             template: subAdminOnboardingEmailTemplate,
-             subject: 'Welcome to 2-0 Investment',
+             subject: 'Welcome to 2Zero Investment',
           });
           return res.status(201).json({ message: 'User created successfully', user });
         }

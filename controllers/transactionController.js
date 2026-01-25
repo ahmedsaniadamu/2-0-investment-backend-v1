@@ -5,12 +5,12 @@ import { sendMail } from "../services/authService.js";
 import { transactionApprovedEmailTemplate, transactionRejectedEmailTemplate } from "../templates/transaction-status-template.js";
 import { parseError } from "../helpers/parseError.js";
 
-const {Transaction, Plan, Investors, Investment} = db;
+const { Transaction, Plan, Investors, Investment } = db;
 
 export const getInvestorTransactions = async (req, res, next) => {
   try {
     const transactions = await paginate(Transaction, req, {
-      searchable: ["investmentGoal"], 
+      searchable: ["investmentGoal"],
       order: [["createdAt", "DESC"]],
       where: { investorId: req.params.id },
       attributes: { exclude: ['reason', 'isWithdrawalRequest'] },
@@ -26,43 +26,43 @@ export const getInvestorTransactions = async (req, res, next) => {
 };
 
 export const getTransactions = async (req, res, next) => {
-   const { status, paymentMethod, startDateFrom, startDateTo, createdFrom, createdTo } = req.query;
-   const type = req.query.type || ''
-    const filters = {};
-    if (status) {
-      filters.status = status;
-    }
-    if (paymentMethod) {
-      filters.paymentMethod = paymentMethod;
-    }
-    if (startDateFrom && startDateTo) {
-      filters.startDate = {
-        [Op.between]: [new Date(startDateFrom), new Date(startDateTo)],
-      };
-    } else if (startDateFrom) {
-      filters.startDate = { [Op.gte]: new Date(startDateFrom) };
-    } else if (startDateTo) {
-      filters.startDate = { [Op.lte]: new Date(startDateTo) };
-    }
-    if (createdFrom && createdTo) {
-      filters.createdAt = {
-        [Op.between]: [new Date(createdFrom), new Date(createdTo)],
-      };
-    } else if (createdFrom) {
-      filters.createdAt = { [Op.gte]: new Date(createdFrom) };
-    } else if (createdTo) {
-      filters.createdAt = { [Op.lte]: new Date(createdTo) };
-    }
+  const { status, paymentMethod, startDateFrom, startDateTo, createdFrom, createdTo } = req.query;
+  const type = req.query.type || ''
+  const filters = {};
+  if (status) {
+    filters.status = status;
+  }
+  if (paymentMethod) {
+    filters.paymentMethod = paymentMethod;
+  }
+  if (startDateFrom && startDateTo) {
+    filters.startDate = {
+      [Op.between]: [new Date(startDateFrom), new Date(startDateTo)],
+    };
+  } else if (startDateFrom) {
+    filters.startDate = { [Op.gte]: new Date(startDateFrom) };
+  } else if (startDateTo) {
+    filters.startDate = { [Op.lte]: new Date(startDateTo) };
+  }
+  if (createdFrom && createdTo) {
+    filters.createdAt = {
+      [Op.between]: [new Date(createdFrom), new Date(createdTo)],
+    };
+  } else if (createdFrom) {
+    filters.createdAt = { [Op.gte]: new Date(createdFrom) };
+  } else if (createdTo) {
+    filters.createdAt = { [Op.lte]: new Date(createdTo) };
+  }
 
   try {
     const transactions = await paginate(Transaction, req, {
-      searchable: ["investmentGoal"], 
+      searchable: ["investmentGoal"],
       order: [["createdAt", "DESC"]],
-      where: type ? type === 'withdraw' ? {...filters , type, isWithdrawalRequest: true } : {...filters , type  } : filters,
+      where: type ? type === 'withdraw' ? { ...filters, type, isWithdrawalRequest: true } : { ...filters, type } : filters,
       include: [
         {
           model: Investors,
-          attributes: ["name", "email"],  
+          attributes: ["name", "email"],
         },
         {
           model: Plan,
@@ -108,33 +108,33 @@ export const reviewTransaction = async (req, res, next) => {
     }
     const investor = await Investors.findByPk(transaction.investorId);
     const { status } = req.body;
-    if(status === 'rejected'){
+    if (status === 'rejected') {
       const { reason } = req.body;
-      if(!reason) return parseError(400, "Reason for rejection is required", next);
+      if (!reason) return parseError(400, "Reason for rejection is required", next);
       await transaction.update({ reason, status });
       await Investment.update({ status: 'cancelled' }, { where: { id: transaction.investmentId } });
-       await  sendMail({
-                  fields: { 
-                       name: investor?.dataValues?.name || '', 
-                       reason,
-                       transactionId: transaction?.id, email: investor.email 
-                      },
-                 subject: "Transaction Rejected - 2-0 Investment",
-                 template: transactionRejectedEmailTemplate
-               });
+      await sendMail({
+        fields: {
+          name: investor?.dataValues?.name || '',
+          reason,
+          transactionId: transaction?.id, email: investor.email
+        },
+        subject: "Transaction Rejected - 2Zero Investment",
+        template: transactionRejectedEmailTemplate
+      });
     }
-   else  {
+    else {
       await transaction.update({ status });
       await Investment.update({ status: 'active' }, { where: { id: transaction.investmentId } });
-      await  sendMail({
-        fields: { 
-              name: investor?.dataValues?.name || '', 
-              transactionId: transaction?.id, email: investor.email 
-            },
-        subject: "Transaction Approved - 2-0 Investment",
+      await sendMail({
+        fields: {
+          name: investor?.dataValues?.name || '',
+          transactionId: transaction?.id, email: investor.email
+        },
+        subject: "Transaction Approved - 2Zero Investment",
         template: transactionApprovedEmailTemplate
       });
-   }
+    }
 
     res.status(200).json({ success: true, data: transaction });
   } catch (error) {
@@ -146,17 +146,17 @@ export const getTransactionSummary = async (req, res, next) => {
   try {
     const [totalTransactions, approved, pending, rejected, withdrawalRequest] = await Promise.all(
       req.params.id ?
-       [ Transaction.count({where: {investorId: req.params.id}}),
-        Transaction.count({where: {investorId: req.params.id, status: "approved"}}),
-        Transaction.count({where: {investorId: req.params.id, status: "pending"}}),
-        Transaction.count({where: {investorId: req.params.id, status: "rejected"}})]
-      :
-      [Transaction.count(),
-      Transaction.count({ where: { status: "approved" } }),
-      Transaction.count({ where: { status: "pending" } }),
-      Transaction.count({ where: { status: "rejected" } }),
-      Transaction.count({ where: { isWithdrawalRequest: true, type: "withdraw" } }),
-    ]
+        [Transaction.count({ where: { investorId: req.params.id } }),
+        Transaction.count({ where: { investorId: req.params.id, status: "approved" } }),
+        Transaction.count({ where: { investorId: req.params.id, status: "pending" } }),
+        Transaction.count({ where: { investorId: req.params.id, status: "rejected" } })]
+        :
+        [Transaction.count(),
+        Transaction.count({ where: { status: "approved" } }),
+        Transaction.count({ where: { status: "pending" } }),
+        Transaction.count({ where: { status: "rejected" } }),
+        Transaction.count({ where: { isWithdrawalRequest: true, type: "withdraw" } }),
+        ]
     );
     if (req.params.id) {
       return res.status(200).json({
