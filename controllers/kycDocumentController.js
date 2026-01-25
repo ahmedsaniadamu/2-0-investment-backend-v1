@@ -90,96 +90,96 @@ export const deleteKycDocument = async (req, res, next) => {
 };
 
 export const uploadDocument = async (req, res, next) => {
-    try{
-      const kycDocuments = await KycDocument.findAll();
-    if(!kycDocuments) return parseError(404, "KYC Documents not found", next);
+  try {
+    const kycDocuments = await KycDocument.findAll();
+    if (!kycDocuments) return parseError(404, "KYC Documents not found", next);
     const _validateUploadedDocuments = validateUploadedDocuments(
-        kycDocuments, 
-        req.body.documents
+      kycDocuments,
+      req.body.documents
     );
-    if(_validateUploadedDocuments.valid){
-        const investor = await Investors.findOne({ where: { id: req.body.investorId } });
-        if(!investor) return parseError(404, "Investor not found", next);
-        const requestExist = await InvestorKycRequest.findOne({ where: { investorId: req.body.investorId } });
-        if (!requestExist){
-          await InvestorKycRequest.create({...req.body, status: 'pending'});
-           
-        }else {
-          await InvestorKycRequest.update({ documents: req.body.documents, status: 'pending'}, {
-            where: { investorId: req.body.investorId }
-          });
-        }
-        await  sendMail({
-                fields: { 
-                      name: investor?.dataValues?.name || '', 
-                       email: investor.email 
-                    },
-                subject: "KYC Documents Verification (2-0 Investment)",
-                template: kycPendingEmailTemplate
-              });
-        res.status(200).json({success: true, message: "Documents uploaded successfully! check your email for further instructions"});
-     }
-    else{
-        return parseError(_validateUploadedDocuments.statusCode, _validateUploadedDocuments.errors, next);
+    if (_validateUploadedDocuments.valid) {
+      const investor = await Investors.findOne({ where: { id: req.body.investorId } });
+      if (!investor) return parseError(404, "Investor not found", next);
+      const requestExist = await InvestorKycRequest.findOne({ where: { investorId: req.body.investorId } });
+      if (!requestExist) {
+        await InvestorKycRequest.create({ ...req.body, status: 'pending' });
+
+      } else {
+        await InvestorKycRequest.update({ documents: req.body.documents, status: 'pending' }, {
+          where: { investorId: req.body.investorId }
+        });
+      }
+      await sendMail({
+        fields: {
+          name: investor?.dataValues?.name || '',
+          email: investor.email
+        },
+        subject: "KYC Documents Verification (2Zero Investment)",
+        template: kycPendingEmailTemplate
+      });
+      res.status(200).json({ success: true, message: "Documents uploaded successfully! check your email for further instructions" });
     }
-    }catch(error){
-        next(error);
+    else {
+      return parseError(_validateUploadedDocuments.statusCode, _validateUploadedDocuments.errors, next);
     }
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getInvestorsKycRequests = async (req, res, next) => {
-     try {
-        const result = await paginate(InvestorKycRequest, req, {
-          searchable: ["name", "email"],
-          order: [["createdAt", "DESC"]],
-          include: [
-                {
-                  model: Investors,  as: "investor",
-                  attributes: { exclude: ['password', 'index', 'role'] }
-                },
-            ],
-        });
-        res.status(200).json(result);
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const result = await paginate(InvestorKycRequest, req, {
+      searchable: ["name", "email"],
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Investors, as: "investor",
+          attributes: { exclude: ['password', 'index', 'role'] }
+        },
+      ],
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const reviewKycRequest = async (req, res, next) => {
-    try {
-        const { status, reason } = req.body;
-        const request = await InvestorKycRequest.findByPk(req.params.id);
-        if (!request) return parseError(404, "KYC Request not found", next);
-        if(!status) return parseError(400, "Status is required", next);
-        const investor = await Investors.findOne({ where: { id: request?.investorId } });
-        if(!investor) return parseError(404, "Investor not found", next);
-        if(status === 'rejected'){
-            if(!reason) return parseError(400, "Reason for rejection is required", next);
-            sendMail({
-                fields: { 
-                      name: investor?.name || '', 
-                      reason,
-                      email: investor?.email 
-                    },
-                subject: "KYC Request Verification Status (2-0 Investment)",
-                template: kycRejectedEmailTemplate
-            })
-        }
-        else {
-            sendMail({
-                fields: { 
-                      name: investor?.name || '', 
-                      email: investor?.email 
-                    },
-                subject: "KYC Request Verification Status (2-0 Investment)",
-                template: kycApprovedEmailTemplate
-            })
-        }
-        await request.update({ status,});
-        res.status(200).json({ success: true, data: request });
-    } catch (error) {
-        next(error);
+  try {
+    const { status, reason } = req.body;
+    const request = await InvestorKycRequest.findByPk(req.params.id);
+    if (!request) return parseError(404, "KYC Request not found", next);
+    if (!status) return parseError(400, "Status is required", next);
+    const investor = await Investors.findOne({ where: { id: request?.investorId } });
+    if (!investor) return parseError(404, "Investor not found", next);
+    if (status === 'rejected') {
+      if (!reason) return parseError(400, "Reason for rejection is required", next);
+      sendMail({
+        fields: {
+          name: investor?.name || '',
+          reason,
+          email: investor?.email
+        },
+        subject: "KYC Request Verification Status (2Zero Investment)",
+        template: kycRejectedEmailTemplate
+      })
     }
+    else {
+      sendMail({
+        fields: {
+          name: investor?.name || '',
+          email: investor?.email
+        },
+        subject: "KYC Request Verification Status (2Zero Investment)",
+        template: kycApprovedEmailTemplate
+      })
+    }
+    await request.update({ status, });
+    res.status(200).json({ success: true, data: request });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getInvestorsKycSummary = async (req, res, next) => {

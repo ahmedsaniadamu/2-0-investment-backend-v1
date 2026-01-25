@@ -23,7 +23,7 @@
 //           rejectUnauthorized: false,
 //         }
 //       });
-   
+
 //     const template_ = Handlebars.compile(template || registrationEmailTemplate);
 //     const rawTemplate =  template_(fields || { 
 //       name: user?.dataValues?.name || name || '', otp
@@ -31,7 +31,7 @@
 //     const { html, errors } = mjml2html(rawTemplate);
 
 //     await transporter.sendMail({
-//       from: `"2-0 Investment" <${process.env.GMAIL_USER}>`,
+//       from: `"2Zero Investment" <${process.env.GMAIL_USER}>`,
 //       to: email || fields?.email,
 //       subject: subject || "Verify your email with OTP",
 //       html:html,
@@ -109,8 +109,8 @@ export const sendMail = async ({
       Messages: [
         {
           From: {
-            Email: process.env.MAILJET_SENDER_EMAIL, 
-            Name: "2-0 Investment"
+            Email: process.env.MAILJET_SENDER_EMAIL,
+            Name: "2Zero Investment"
           },
           To: [
             { Email: email || fields?.email }

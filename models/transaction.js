@@ -26,8 +26,8 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     },
     reason: {
-    type: DataTypes.STRING,
-    allowNull: true,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     isWithdrawalRequest: {
       type: DataTypes.BOOLEAN,
@@ -37,6 +37,14 @@ export default (sequelize, DataTypes) => {
     status: {
       type: DataTypes.ENUM("pending", "approved", "rejected"),
       defaultValue: "pending",
+    },
+    transactionStatus: {
+      type: DataTypes.ENUM("requires_payment_method", "requires_confirmation", "requires_action", "processing", "succeeded", "failed", "canceled"),
+      defaultValue: "processing",
+    },
+    transactionId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   });
 
