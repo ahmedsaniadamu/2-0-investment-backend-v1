@@ -68,7 +68,7 @@ export const stripeWebhook = (app) => {
                             const investment = await Investment.create({
                                 investorId,
                                 planId,
-                                amount,
+                                amount: Number(amount) / 100,
                                 paymentMethod,
                                 startDate,
                                 investmentGoal,
@@ -81,7 +81,7 @@ export const stripeWebhook = (app) => {
                                 type: 'deposit',
                                 status: 'pending',
                                 transactionStatus: 'succeeded',
-                                amount,
+                                amount: Number(amount) / 100,
                                 investorId,
                                 investmentId: investment.id,
                                 planId,
