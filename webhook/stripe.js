@@ -79,7 +79,7 @@ export const stripeWebhook = (app) => {
                             await Transaction.create({
                                 transactionId,
                                 type: 'deposit',
-                                status: 'approved',
+                                status: 'pending',
                                 transactionStatus: 'succeeded',
                                 amount,
                                 investorId,
