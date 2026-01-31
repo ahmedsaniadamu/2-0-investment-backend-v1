@@ -2,18 +2,22 @@ import bodyParser from 'body-parser';
 import stripe from '../config/stripe.js';
 import { db } from "../models/index.js";
 import { sendMail } from "../services/authService.js";
-import { transactionPendingEmailTemplate, transactionFailedEmailTemplate, transactionCanceledEmailTemplate } from "../templates/transaction-status-template.js";
-import { parseError } from "../helpers/parseError.js";
+import {
+    transactionPendingEmailTemplate,
+    transactionFailedEmailTemplate,
+    transactionCanceledEmailTemplate
+} from "../templates/transaction-status-template.js";
 
-const { Investment, Transaction, Investors } = db;
+const { Investment, Transaction, Investors, Profile, sequelize } = db;
 
 export const stripeWebhook = (app) => {
     app.post(
         '/api/v1/stripe/webhook',
         bodyParser.raw({ type: 'application/json' }),
-        async (req, res, next) => {
+        async (req, res) => {
             const sig = req.headers['stripe-signature'];
             let event;
+
             try {
                 event = stripe.webhooks.constructEvent(
                     req.body,
@@ -21,172 +25,129 @@ export const stripeWebhook = (app) => {
                     process.env.STRIPE_WEBHOOK_SECRET
                 );
             } catch (err) {
-                console.error('Webhook verification failed:', err.message, { err: process.env.STRIPE_WEBHOOK_SECRET });
+                console.error('Webhook signature verification failed:', err.message);
                 return res.status(400).send(`Webhook Error: ${err.message}`);
             }
+
             try {
+                const stripeObject = event.data.object;
+                const metadata = stripeObject.metadata || {};
+                const {
+                    investorId,
+                    planId,
+                    paymentMethod,
+                    startDate,
+                    investmentGoal,
+                    agreement,
+                    amount
+                } = metadata;
+                const transactionId = stripeObject.id;
+
                 switch (event.type) {
                     case 'payment_intent.succeeded': {
-                        const paymentIntent = event.data.object;
-                        const { investorId, type, planId, paymentMethod, startDate, investmentGoal, agreement, amount } = paymentIntent.metadata;
-                        console.log({ transactionId: paymentIntent.id, investorId, type, planId, paymentMethod, startDate, investmentGoal, agreement, message: 'payment_intent.succeeded' });
-                        try {
-                            const newInvestment = await Investment.create({
-                                planId,
+                        await sequelize.transaction(async (t) => {
+                            const existingTransaction = await Transaction.findOne({
+                                where: { transactionId },
+                                transaction: t,
+                                lock: t.LOCK.UPDATE
+                            });
+
+
+
+                            if (existingTransaction) {
+                                console.log(`🔁 Duplicate webhook ignored: ${transactionId}`);
+                                return;
+                            }
+
+                            const investor = await Investors.findByPk(investorId, { transaction: t });
+                            if (!investor) {
+                                console.error('Investor not found:', investorId);
+                                throw new Error('Investor not found');
+                            }
+
+                            const investment = await Investment.create({
                                 investorId,
+                                planId,
                                 amount,
                                 paymentMethod,
                                 startDate,
                                 investmentGoal,
                                 agreement,
-                            });
-                            const investor = await Investors.findOne({ where: { id: investorId } });
-                            if (!investor) return parseError(404, 'Investor not found', next);
-                            const transaction = await Transaction.create({
+                                status: 'active'
+                            }, { transaction: t });
+
+                            await Transaction.create({
+                                transactionId,
                                 type: 'deposit',
-                                investmentGoal,
+                                status: 'approved',
+                                transactionStatus: 'succeeded',
                                 amount,
+                                investorId,
+                                investmentId: investment.id,
+                                planId,
                                 paymentMethod,
                                 startDate,
-                                status: 'pending',
-                                transactionStatus: 'succeeded',
-                                transactionId: paymentIntent.id,
-                                investmentId: newInvestment?.id,
-                                investorId,
-                                planId,
-                            });
+                                investmentGoal
+                            }, { transaction: t });
+                            // Send success email
                             await sendMail({
                                 fields: {
-                                    name: investor?.dataValues?.name || '',
-                                    transactionId: paymentIntent.id, email: investor.email
+                                    name: investor.name || '',
+                                    transactionId: transactionId,
+                                    email: investor.email
                                 },
-                                subject: "Transaction Review Status  (2ZeroInvestment)",
+                                subject: "Transaction Successful (2ZeroInvestment)",
                                 template: transactionPendingEmailTemplate
                             });
-
-                        } catch (error) {
-                            return next(error);
-                        }
+                        });
                         break;
                     }
                     case 'payment_intent.payment_failed': {
-                        const paymentIntent = event.data.object;
-                        const { investorId, planId, paymentMethod, startDate, investmentGoal, agreement, amount } = paymentIntent.metadata;
-                        const reason = paymentIntent.last_payment_error?.message || 'The payment was declined.';
-
-                        try {
-                            const newInvestment = await Investment.create({
-                                planId,
-                                investorId,
-                                amount,
-                                paymentMethod,
-                                startDate,
-                                investmentGoal,
-                                agreement,
-                                status: 'cancelled'
+                        const investor = await Investors.findByPk(investorId);
+                        const reason = stripeObject.last_payment_error?.message || 'Payment failed';
+                        if (investor) {
+                            await sendMail({
+                                fields: {
+                                    name: investor.name || '',
+                                    transactionId: transactionId,
+                                    email: investor.email,
+                                    reason
+                                },
+                                subject: "Transaction Failed (2ZeroInvestment)",
+                                template: transactionFailedEmailTemplate
                             });
-
-                            const investor = await Investors.findOne({ where: { id: investorId } });
-                            if (investor) {
-                                const transaction = await Transaction.create({
-                                    type: 'deposit',
-                                    investmentGoal,
-                                    amount,
-                                    paymentMethod,
-                                    startDate,
-                                    status: 'rejected',
-                                    transactionStatus: 'failed',
-                                    transactionId: paymentIntent.id,
-                                    investmentId: newInvestment?.id,
-                                    investorId,
-                                    planId,
-                                    reason: reason
-                                });
-
-                                await sendMail({
-                                    fields: {
-                                        name: investor?.dataValues?.name || '',
-                                        transactionId: paymentIntent.id,
-                                        email: investor.email,
-                                        reason: reason,
-                                        amount: amount,
-                                        paymentMethod: paymentMethod,
-                                        date: new Date().toLocaleDateString(),
-                                        supportLink: process.env.SUPPORT_LINK || '#'
-                                    },
-                                    subject: "Transaction Failed (2ZeroInvestment)",
-                                    template: transactionFailedEmailTemplate
-                                });
-                            }
-                        } catch (error) {
-                            console.error('Error handling failed payment:', error);
                         }
                         break;
                     }
                     case 'payment_intent.canceled': {
-                        const paymentIntent = event.data.object;
-                        const { investorId, planId, paymentMethod, startDate, investmentGoal, agreement, amount } = paymentIntent.metadata;
-
-                        try {
-                            const newInvestment = await Investment.create({
-                                planId,
-                                investorId,
-                                amount,
-                                paymentMethod,
-                                startDate,
-                                investmentGoal,
-                                agreement,
-                                status: 'cancelled'
+                        const investor = await Investors.findByPk(investorId);
+                        if (investor) {
+                            await sendMail({
+                                fields: {
+                                    name: investor.name || '',
+                                    transactionId: transactionId,
+                                    email: investor.email
+                                },
+                                subject: "Transaction Canceled (2ZeroInvestment)",
+                                template: transactionCanceledEmailTemplate
                             });
-
-                            const investor = await Investors.findOne({ where: { id: investorId } });
-                            if (investor) {
-                                await Transaction.create({
-                                    type: 'deposit',
-                                    investmentGoal,
-                                    amount,
-                                    paymentMethod,
-                                    startDate,
-                                    status: 'rejected',
-                                    transactionStatus: 'canceled',
-                                    transactionId: paymentIntent.id,
-                                    investmentId: newInvestment?.id,
-                                    investorId,
-                                    planId,
-                                });
-
-                                await sendMail({
-                                    fields: {
-                                        name: investor?.dataValues?.name || '',
-                                        transactionId: paymentIntent.id,
-                                        email: investor.email,
-                                        amount: amount,
-                                        paymentMethod: paymentMethod,
-                                        date: new Date().toLocaleDateString(),
-                                        supportLink: process.env.SUPPORT_LINK || '#'
-                                    },
-                                    subject: "Transaction Canceled (2ZeroInvestment)",
-                                    template: transactionCanceledEmailTemplate
-                                });
-                            }
-                        } catch (error) {
-                            console.error('Error handling canceled payment:', error);
                         }
                         break;
                     }
                     default:
-                        console.log(`Unhandled event type ${event.type}`);
+                        console.log(`Unhandled event type: ${event.type}`);
                 }
 
-                if (!res.headersSent) {
-                    return res.json({ received: true });
-                }
+                return res.json({ received: true });
+
             } catch (error) {
                 console.error('Webhook processing error:', error);
-                if (!res.headersSent) {
-                    return res.status(500).send('Webhook handler failed');
+                if (error.message === 'Investor not found') {
+                    return res.status(404).send(error.message);
                 }
+                return res.status(500).send('Webhook handler failed');
             }
         }
     );
-}
+};
+

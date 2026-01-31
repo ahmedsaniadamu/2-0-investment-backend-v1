@@ -7,7 +7,7 @@ import { addYears } from "date-fns";
 import { Op } from "sequelize";
 import stripe from "../config/stripe.js";
 
-const { Investment, Transaction, Investors, Plan, InvestorKycRequest } = db;
+const { Investment, Transaction, Investors, Plan, InvestorKycRequest, Profile } = db;
 
 export const createInvestment = async (req, res, next) => {
   try {
@@ -205,7 +205,9 @@ export const requestWithdrawal = async (req, res, next) => {
     await Transaction.create({
       ...rest, isWithdrawalRequest: true, type: "withdraw",
       amount: withdrawalAmount, status: "pending",
+      transactionId: null,
     });
+    await Investment.update({ isWithdrawalSent: true }, { where: { id } });
     res.status(200).json({
       message: `Withdrawal request sent successfully. 
          you will recieve an email notification once review is completed.`,
@@ -233,17 +235,20 @@ export const createPaymentIntent = async (req, res, next) => {
     if (amount > plan.maxDeposit) return parseError(400, `Amount is more than maximum deposit of this plan ${plan.maxDeposit}`, next);
     const investor = await Investors.findOne({ where: { id: investorId } });
     if (!investor) return parseError(404, "Investor not found", next);
+    const profile = await Profile.findOne({ where: { investorId: investorId } });
+    if (!profile) return parseError(404, "Profile not found", next);
     if (investor.role !== "investor") return parseError(400, "Invalid investor", next);
     if (investor.isVerified !== true) return parseError(400, "Investor Account is not verified", next);
+    const amountInCents = amount * 100;
     const paymentIntent = await stripe.paymentIntents.create({
-      amount,
+      amount: amountInCents,
       currency,
       automatic_payment_methods: { enabled: true },
       metadata: {
         investorId,
         type: 'investment',
         planId,
-        amount,
+        amount: amountInCents,
         paymentMethod,
         startDate,
         investmentGoal,

@@ -25,6 +25,7 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import compression from "compression";
 import { stripeWebhook } from "./webhook/stripe.js";
+import { verifyInvestorAccount } from "./controllers/transactionController.js";
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.use(express.json({ limit: '2mb' }));
 
 // unaunthenticated routes
 app.get('/api/v1/plans', getPlans)
+app.get("/api/v1/verify-account/:investmentId/:investorId", verifyInvestorAccount);
 //unauthenticated routes end
 app.use("/api/v1/auth", authRoutes);
 app.use('/api/v1/upload', isAuth, uploadRoutes)

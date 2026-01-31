@@ -287,3 +287,80 @@ export const transactionPendingEmailTemplate = `
   </mj-body>
 </mjml>
 `;
+
+export const investorOnboardingEmailTemplate = `
+<mjml>
+  <mj-body background-color="#f9f9f9">
+    <mj-section padding="20px">
+      <mj-column>
+        <!-- Logo -->
+        <mj-image 
+          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          width="100px" 
+          height="100px" 
+          alt="Logo"
+          align="center"
+        />
+
+        <!-- Greeting -->
+        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
+          Welcome, {{name}}!
+        </mj-text>
+
+        <!-- Main Message -->
+        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#5cb85c" padding="10px 0">
+          You're just one step away from completing your investor onboarding.
+        </mj-text>
+
+        <!-- Explanation -->
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="10px 20px">
+          To ensure secure payouts and compliance, we require all investors to complete their onboarding process with our payment partner, <strong>Stripe</strong>. This process is quick and ensures your investment returns can be deposited directly into your bank account.
+        </mj-text>
+
+        <!-- Onboarding Button -->
+        <mj-button background-color="#002560ff" color="#ffffff" href="{{onboardingLink}}" align="center" padding="20px">
+          Complete Onboarding
+        </mj-button>
+
+        <!-- Next Steps -->
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
+          <strong>What you’ll need:</strong>
+          <ul style="margin:10px 0; padding-left:20px;">
+            <li>Your full legal name and contact details.</li>
+            <li>Bank account information for receiving payouts.</li>
+            <li>Any required identification documents for verification.</li>
+          </ul>
+          Once completed, your account will be activated and ready to receive investment returns.
+        </mj-text>
+
+        <!-- Closing -->
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
+          Thank you for choosing <strong>2Zero Investment</strong>. We value your trust and look forward to helping you grow your investments.<br/><br/>
+          If you encounter any issues during onboarding, please reach out to our support team.
+        </mj-text>
+
+        <!-- Support Button -->
+        <mj-button background-color="#5cb85c" color="#ffffff" href="{{supportLink}}" align="center" padding="20px">
+          Contact Support
+        </mj-button>
+
+        <!-- Signature -->
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 20px">
+          Warm regards,<br/>
+          <strong>The 2Zero Investment Team</strong>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#f0f0f0" padding="15px">
+      <mj-column>
+        <mj-text font-size="12px" font-family="Helvetica, Arial, sans-serif" align="center" color="#666666">
+          © 2026 2Zero Investment. All rights reserved.<br/>
+          This is an automated message, please do not reply directly.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+`;
