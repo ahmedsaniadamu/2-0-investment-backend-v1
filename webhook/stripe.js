@@ -73,7 +73,7 @@ export const stripeWebhook = (app) => {
                                 startDate,
                                 investmentGoal,
                                 agreement,
-                                status: 'active'
+                                status: 'pending'
                             }, { transaction: t });
 
                             await Transaction.create({
