@@ -1,10 +1,10 @@
 'use strict';
 export default (sequelize, DataTypes) => {
   const Investment = sequelize.define('Investment', {
-    index: { 
-      allowNull: false, 
-      autoIncrement: true, 
-      type: DataTypes.INTEGER 
+    index: {
+      allowNull: false,
+      autoIncrement: true,
+      type: DataTypes.INTEGER
     },
     id: {
       type: DataTypes.UUID,
@@ -43,6 +43,22 @@ export default (sequelize, DataTypes) => {
     status: {
       type: DataTypes.ENUM('pending', 'active', 'completed', 'cancelled'),
       defaultValue: 'pending',
+    },
+    isWithdrawalSent: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    paymentStatus: {
+      type: DataTypes.ENUM('n/a', 'pending', 'paid', 'failed'),
+      defaultValue: 'n/a',
+    },
+    onboardingLink: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    loginLink: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   });
 

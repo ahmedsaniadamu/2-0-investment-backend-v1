@@ -45,6 +45,17 @@ export default (sequelize, DataTypes) => {
     transactionId: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
+    },
+    isPayout: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    payoutStatus: {
+      type: DataTypes.ENUM('success', 'failed', 'pending'),
+      defaultValue: 'pending',
+      allowNull: true
     },
   });
 

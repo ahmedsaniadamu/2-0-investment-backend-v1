@@ -35,12 +35,21 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.ENUM("pending", "verified", "rejected"),
       defaultValue: "pending",
     },
+    stripeAccountId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    accountStatus: {
+      type: DataTypes.STRING,
+      defaultValue: 'pending',
+      allowNull: false,
+    }
   });
 
   // Association
   Profile.associate = (models) => {
     Profile.belongsTo(models.Investors, { foreignKey: "investorId", as: "investor" });
-    Profile.belongsTo(models.InvestorKycRequest, { 
+    Profile.belongsTo(models.InvestorKycRequest, {
       foreignKey: "investorId", as: "investorKycRequest",
       targetKey: "investorId",
     });

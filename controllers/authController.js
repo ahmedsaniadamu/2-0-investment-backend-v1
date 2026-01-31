@@ -234,6 +234,7 @@ export const login = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        phone_number: user.phone_number,
         userType: user.userType,
         isVerified: user.isVerified,
         permissions: user.permissions,
