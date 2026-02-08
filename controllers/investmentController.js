@@ -229,6 +229,11 @@ export const createPaymentIntent = async (req, res, next) => {
     if (
       !amount || !currency || !investorId || !planId || !paymentMethod || !startDate || !investmentGoal || !agreement
     ) return parseError(400, "amount, currency, investorId, planId, paymentMethod, startDate, investmentGoal, agreement are required", next);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+    //    if (start < today) return parseError(400, "Start date cannot be in the past", next);
     const plan = await Plan.findOne({ where: { id: planId } });
     if (!plan) return parseError(404, "Plan not found", next);
     if (amount < plan.minDeposit) return parseError(400, `Amount is less than minimum deposit of this plan ${plan.minDeposit}`, next);
