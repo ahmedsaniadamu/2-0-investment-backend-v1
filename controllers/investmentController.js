@@ -152,7 +152,8 @@ export const getInvestorInvestmentsSummary = async (req, res, next) => {
     const completed = await Investment.count({
       where: {
         status: "active",
-        startDate: { [Op.lte]: oneYearAgo }
+        startDate: { [Op.lte]: oneYearAgo },
+        investorId: investorId
       }
     });
     // const completed = await Investment.count({where: {investorId: investorId, status: 'completed'}});
