@@ -1,18 +1,18 @@
 import { paginate } from "../helpers/pagination.js";
 import { db } from "../models/index.js";
 import { parseError } from "../helpers/parseError.js";
-import { cast, col, fn, literal } from "sequelize";
+import { cast, col, fn, literal, Op } from "sequelize";
 
-const {Plan, Investment} = db;
+const { Plan, Investment } = db;
 
 export const createPlan = async (req, res, next) => {
   try {
     const { name, description, minDeposit, maxDeposit, roi } = req.body;
-    if(!name || !description || !minDeposit || !maxDeposit || !roi) return parseError(400, "All fields are required", next);
-    
+    if (!name || !description || !minDeposit || !maxDeposit || !roi) return parseError(400, "All fields are required", next);
+
     const isExist = await Plan.findOne({ where: { name } });
     if (isExist) return parseError(400, "Plan already exists", next);
-    
+
     const plan = await Plan.create({ name, description, minDeposit, maxDeposit, roi });
     res.status(201).json({ success: true, data: plan });
   } catch (error) {
@@ -21,26 +21,29 @@ export const createPlan = async (req, res, next) => {
 };
 
 export const getPlans = async (req, res, next) => {
+  const search = req.query.search || "";
   try {
     const result = await Plan.findAll({
-      searchable: ["name", "description"], 
-      order: [["createdAt", "DESC"]],
-      attributes: {
-       // exclude: ['visibility'],
-        include: [
-          [ cast( fn("COUNT", col("planId")), "INTEGER"),
-            "investmentCount"
-          ]
+      where: {
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${search}%` } },
+          { description: { [Op.iLike]: `%${search}%` } }
         ]
       },
-      //where: { visibility: true },
+      order: [["createdAt", "DESC"]],
+      attributes: {
+        include: [
+          [cast(fn("COUNT", col("investments.planId")), "INTEGER"), "investmentCount"]
+        ]
+      },
       include: [
         {
-          model: Investment, as: "investments",
-          attributes: [],  
+          model: Investment,
+          as: "investments",
+          attributes: []
         }
       ],
-      group: ["Plan.id"],  
+      group: ["Plan.id"]
     });
 
     res.status(200).json(result);
@@ -48,6 +51,7 @@ export const getPlans = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // export const getPlansAdmin = async (req, res, next) => {
 //   try {
@@ -117,8 +121,8 @@ export const getPlanById = async (req, res, next) => {
 export const updatePlan = async (req, res, next) => {
   try {
     const plan = await Plan.findByPk(req.params.id);
-    if( typeof req.body.visibility !== "boolean") return parseError(400, "Plan visibility is required", next);
-    
+    if (typeof req.body.visibility !== "boolean") return parseError(400, "Plan visibility is required", next);
+
     if (!plan) return parseError(404, "Plan not found", next);
 
     await plan.update({ visibility: req.body.visibility });
@@ -144,27 +148,29 @@ export const getPlanInvestments = async (req, res, next) => {
   try {
     const plan = await Plan.findByPk(req.params.id);
     if (!plan) return parseError(404, "Plan not found", next);
-    
+
     const investments = await paginate(Investment, req, {
       where: { planId: req.params.id },
       searchable: ["investmentGoal", 'paymentMethod'],
       attributes: { exclude: ['investorId', 'agreement', 'index'] },
     });
-   let investment = {...investments, data: investments.data.map((i) => {
-           function updateInvestmentStatus(investment) {
-                const startDate = new Date(investment.startDate);
-                const today = new Date();
-                const oneYearLater = new Date(startDate);
-                oneYearLater.setFullYear(startDate.getFullYear() + 1);
-                
-                if (today >= oneYearLater && investment.status === 'active') {
-                    return 'completed';
-                }
-                else return investment.status;
-             }
-             return {...JSON.parse(JSON.stringify(i)), status: updateInvestmentStatus(i)}
-        } )};
-        res.status(200).json(investment);
+    let investment = {
+      ...investments, data: investments.data.map((i) => {
+        function updateInvestmentStatus(investment) {
+          const startDate = new Date(investment.startDate);
+          const today = new Date();
+          const oneYearLater = new Date(startDate);
+          oneYearLater.setFullYear(startDate.getFullYear() + 1);
+
+          if (today >= oneYearLater && investment.status === 'active') {
+            return 'completed';
+          }
+          else return investment.status;
+        }
+        return { ...JSON.parse(JSON.stringify(i)), status: updateInvestmentStatus(i) }
+      })
+    };
+    res.status(200).json(investment);
   } catch (error) {
     next(error);
   }
