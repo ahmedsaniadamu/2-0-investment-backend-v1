@@ -75,8 +75,9 @@ export const updateProfile = async (req, res, next) => {
     if (!_profile) {
       const createData = { ...req.body, investorId: req.params.id };
       if (stripeAccountId) createData.stripeAccountId = stripeAccountId;
-
+      const phone_number = createData.phone;
       const profile = await Profile.create(createData);
+      if (phone_number) await investor.update({ phone_number });
       res.status(200).json({ message: "Profile created successfully", profile });
     }
     else {
@@ -84,10 +85,11 @@ export const updateProfile = async (req, res, next) => {
       if (stripeAccountId && !_profile.stripeAccountId) {
         updateData.stripeAccountId = stripeAccountId;
       }
-
+      const phone_number = updateData.phone;
       await Profile.update(updateData, {
         where: { investorId: req.params.id }
       });
+      if (phone_number) await investor.update({ phone_number });
       res.status(200).json({ message: "Profile updated successfully", profile: updateData });
     }
 

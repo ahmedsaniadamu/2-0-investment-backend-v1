@@ -9,12 +9,26 @@ import { parseError } from "../helpers/parseError.js";
 
 dotenv.config();
 
-const { Investors, InvestorOtps, Permission } = db;
+const { Investors, InvestorOtps, Permission, Profile } = db;
 
 export const verifyOtp = async (req, res, next) => {
   try {
     const { investorId, otp, type } = req.body;
-    const user = await Investors.findOne({ where: { id: investorId } });
+    const user = await Investors.findOne({
+      where: { id: investorId },
+      include: [
+        {
+          model: Profile,
+          as: "profile",
+        },
+        {
+          model: Permission,
+          as: "permissions",
+          attributes: ["name", "module"],
+          through: { attributes: [] },
+        }
+      ]
+    });
     if (!user) return parseError(404, 'Investor not found', next);
     const investorOtp = await InvestorOtps.findOne({ where: { investorId: user?.id, otp } });
     if (!investorOtp) return parseError(400, 'Invalid OTP', next);
@@ -33,7 +47,12 @@ export const verifyOtp = async (req, res, next) => {
       token,
       user: {
         id: user.id, name: user.name,
-        email: user.email, role: user.role
+        email: user.email, role: user.role,
+        phone_number: user.phone_number,
+        userType: user.userType,
+        isVerified: user.isVerified,
+        permissions: user.permissions,
+        profile: user.profile,
       },
     } : {}
     return res.status(200).json({
@@ -111,7 +130,21 @@ export const resetPassword = async (req, res, next) => {
     if (!email || !newPassword)
       return parseError(400, "Email and new password are required", next);
 
-    const investor = await Investors.findOne({ where: { email } });
+    const investor = await Investors.findOne({
+      where: { email },
+      include: [
+        {
+          model: Profile,
+          as: "profile",
+        },
+        {
+          model: Permission,
+          as: "permissions",
+          attributes: ["name", "module"],
+          through: { attributes: [] },
+        }
+      ]
+    });
     if (!investor) return parseError(404, "Investor not found", next);
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -124,7 +157,12 @@ export const resetPassword = async (req, res, next) => {
       token,
       user: {
         id: investor.id, name: investor.name,
-        email: investor.email, role: investor.role
+        email: investor.email, role: investor.role,
+        phone_number: investor.phone_number,
+        userType: investor.userType,
+        isVerified: investor.isVerified,
+        permissions: investor.permissions,
+        profile: investor.profile,
       }
     });
   } catch (error) {
@@ -198,6 +236,10 @@ export const login = async (req, res, next) => {
           attributes: ["name", "module"],
           through: { attributes: [] },
         },
+        {
+          model: Profile,
+          as: "profile",
+        },
       ],
     });
     if (!user) {
@@ -238,6 +280,7 @@ export const login = async (req, res, next) => {
         userType: user.userType,
         isVerified: user.isVerified,
         permissions: user.permissions,
+        profile: user.profile,
       },
     });
   } catch (error) {

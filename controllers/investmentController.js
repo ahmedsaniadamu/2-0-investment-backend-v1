@@ -6,6 +6,9 @@ import { parseError } from "../helpers/parseError.js";
 import { addYears } from "date-fns";
 import { Op } from "sequelize";
 import stripe from "../config/stripe.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { Investment, Transaction, Investors, Plan, InvestorKycRequest, Profile } = db;
 
@@ -39,7 +42,8 @@ export const createInvestment = async (req, res, next) => {
     await sendMail({
       fields: {
         name: investor?.dataValues?.name || '',
-        transactionId: transaction?.id, email: investor.email
+        transactionId: transaction?.id, email: investor.email,
+        dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
       },
       subject: "Transaction Review Status - 2Zero Investment",
       template: transactionPendingEmailTemplate

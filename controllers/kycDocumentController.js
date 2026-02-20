@@ -4,6 +4,9 @@ import { parseError } from "../helpers/parseError.js";
 import { validateUploadedDocuments } from "../helpers/validateDocuments.js";
 import { sendMail } from "../services/authService.js";
 import { kycApprovedEmailTemplate, kycPendingEmailTemplate, kycRejectedEmailTemplate } from "../templates/kyc-status-template.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { KycDocument, InvestorKycRequest, Investors } = db;
 
@@ -112,7 +115,9 @@ export const uploadDocument = async (req, res, next) => {
       await sendMail({
         fields: {
           name: investor?.dataValues?.name || '',
-          email: investor.email
+          email: investor.email,
+          dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-kyc-status`,
+          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`
         },
         subject: "KYC Documents Verification (2Zero Investment)",
         template: kycPendingEmailTemplate
@@ -159,7 +164,9 @@ export const reviewKycRequest = async (req, res, next) => {
         fields: {
           name: investor?.name || '',
           reason,
-          email: investor?.email
+          email: investor?.email,
+          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
+          guidelinesLink: `${process.env.GUIDELINES_REDIRECT_URL}/kyc-guidelines`,
         },
         subject: "KYC Request Verification Status (2Zero Investment)",
         template: kycRejectedEmailTemplate
@@ -169,7 +176,9 @@ export const reviewKycRequest = async (req, res, next) => {
       sendMail({
         fields: {
           name: investor?.name || '',
-          email: investor?.email
+          email: investor?.email,
+          dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-kyc-status`,
+          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`
         },
         subject: "KYC Request Verification Status (2Zero Investment)",
         template: kycApprovedEmailTemplate
