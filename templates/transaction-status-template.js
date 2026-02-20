@@ -6,7 +6,7 @@ export const transactionFailedEmailTemplate = `
       <mj-column>
         <!-- Logo -->
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"
@@ -103,7 +103,7 @@ export const transactionCanceledEmailTemplate = `
       <mj-column>
         <!-- Logo -->
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"
@@ -203,7 +203,7 @@ export const transactionRejectedEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"
@@ -234,7 +234,7 @@ export const transactionApprovedEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"
@@ -264,7 +264,7 @@ export const transactionPendingEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"
@@ -280,7 +280,7 @@ export const transactionPendingEmailTemplate = `
           We appreciate your patience. You will receive another update once the review is complete.
         </mj-text>
         <mj-button background-color="#002560ff" color="#ffffff" href="{{dashboardLink}}" align="center">
-          View Status
+          View Status 
         </mj-button>
       </mj-column>
     </mj-section>
@@ -295,7 +295,7 @@ export const investorOnboardingEmailTemplate = `
       <mj-column>
         <!-- Logo -->
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"

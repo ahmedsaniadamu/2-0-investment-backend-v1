@@ -128,7 +128,9 @@ export const reviewTransaction = async (req, res, next) => {
         fields: {
           name: investor?.dataValues?.name || '',
           reason,
-          transactionId: transaction?.transactionId, email: investor.email
+          transactionId: transaction?.transactionId, email: investor.email,
+          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
+          dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
         },
         subject: "Transaction Rejected - 2Zero Investment",
         template: transactionRejectedEmailTemplate
@@ -142,7 +144,8 @@ export const reviewTransaction = async (req, res, next) => {
         await sendMail({
           fields: {
             name: investor?.dataValues?.name || '',
-            transactionId: transaction?.transactionId, email: investor.email
+            transactionId: transaction?.transactionId, email: investor.email,
+            dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
           },
           subject: "Transaction Approved - 2Zero Investment",
           template: transactionApprovedEmailTemplate

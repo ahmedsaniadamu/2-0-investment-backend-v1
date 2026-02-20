@@ -43,7 +43,11 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: 'pending',
       allowNull: false,
-    }
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 
   // Association

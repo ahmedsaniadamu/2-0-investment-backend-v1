@@ -61,6 +61,11 @@ export default (sequelize, DataTypes) => {
       as: 'kycRequests',
       onDelete: 'CASCADE',
     });
+    Investor.hasOne(models.Profile, {
+      foreignKey: 'investorId',
+      as: 'profile',
+      onDelete: 'CASCADE',
+    });
     Investor.belongsToMany(models.Permission, {
       through: "UserPermissions",
       foreignKey: "userId",

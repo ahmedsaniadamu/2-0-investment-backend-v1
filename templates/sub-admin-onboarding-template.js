@@ -4,7 +4,7 @@ export const subAdminOnboardingEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/nyiZaFs.jpeg" 
+          src="https://i.imgur.com/19FXl2n.png" 
           width="100px" 
           height="100px" 
           alt="Logo"

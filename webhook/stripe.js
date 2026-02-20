@@ -2,14 +2,17 @@ import bodyParser from 'body-parser';
 import stripe from '../config/stripe.js';
 import { db } from "../models/index.js";
 import { sendMail } from "../services/authService.js";
+import dotenv from "dotenv";
 import {
     transactionPendingEmailTemplate,
     transactionFailedEmailTemplate,
-    transactionCanceledEmailTemplate
+    transactionCanceledEmailTemplate,
+    transactionApprovedEmailTemplate
 } from "../templates/transaction-status-template.js";
 
 const { Investment, Transaction, Investors, Profile, sequelize } = db;
 
+dotenv.config();
 export const stripeWebhook = (app) => {
     app.post(
         '/api/v1/stripe/webhook',
@@ -51,9 +54,6 @@ export const stripeWebhook = (app) => {
                                 transaction: t,
                                 lock: t.LOCK.UPDATE
                             });
-
-
-
                             if (existingTransaction) {
                                 console.log(`🔁 Duplicate webhook ignored: ${transactionId}`);
                                 return;
@@ -90,11 +90,13 @@ export const stripeWebhook = (app) => {
                                 investmentGoal
                             }, { transaction: t });
                             // Send success email
+                            console.log("dashboard link", `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`)
                             await sendMail({
                                 fields: {
                                     name: investor.name || '',
                                     transactionId: transactionId,
-                                    email: investor.email
+                                    email: investor.email,
+                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
                                 },
                                 subject: "Transaction Successful (2ZeroInvestment)",
                                 template: transactionPendingEmailTemplate
@@ -111,7 +113,9 @@ export const stripeWebhook = (app) => {
                                     name: investor.name || '',
                                     transactionId: transactionId,
                                     email: investor.email,
-                                    reason
+                                    reason,
+                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
+                                    supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
                                 },
                                 subject: "Transaction Failed (2ZeroInvestment)",
                                 template: transactionFailedEmailTemplate
@@ -126,7 +130,9 @@ export const stripeWebhook = (app) => {
                                 fields: {
                                     name: investor.name || '',
                                     transactionId: transactionId,
-                                    email: investor.email
+                                    email: investor.email,
+                                    supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
+                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
                                 },
                                 subject: "Transaction Canceled (2ZeroInvestment)",
                                 template: transactionCanceledEmailTemplate
