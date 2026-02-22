@@ -19,7 +19,12 @@ export const getInvestorTransactions = async (req, res, next) => {
       where: { investorId: req.params.id },
       attributes: { exclude: ['reason', 'isWithdrawalRequest'] },
       include: [
-        { model: Plan, attributes: ['name'], as: 'Plan' }
+        {
+          model: Plan,
+          attributes: ['name'],
+          as: 'Plan',
+          searchable: ['name'],
+        }
       ]
     });
 
@@ -28,7 +33,6 @@ export const getInvestorTransactions = async (req, res, next) => {
     next(error);
   }
 };
-
 export const getTransactions = async (req, res, next) => {
   const { status, paymentMethod, startDateFrom, startDateTo, createdFrom, createdTo, transactionId } = req.query;
   const type = req.query.type || ''

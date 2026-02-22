@@ -64,8 +64,11 @@ export const getInvestments = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
       attributes: { exclude: ['index'] },
       include: [
-        { model: Plan, attributes: ['name', 'roi'], as: 'plan' },
-        { model: Investors, attributes: ['name', 'email', 'phone_number'], as: 'investor' }
+        { model: Plan, attributes: ['name', 'roi'], as: 'plan', searchable: ['name'], },
+        {
+          model: Investors, attributes: ['name', 'email', 'phone_number'],
+          as: 'investor', searchable: ['name', 'email', 'phone_number'],
+        }
       ]
     });
     if (!result) return parseError(404, "Investments not found", next);
@@ -98,7 +101,7 @@ export const getInvestorInvestments = async (req, res, next) => {
       searchable: ["investmentGoal"],
       attributes: { exclude: ['investorId', 'updatedAt', 'reason'] },
       include: [
-        { model: Plan, attributes: ['name', 'roi'], as: 'plan' }
+        { model: Plan, attributes: ['name', 'roi'], as: 'plan', searchable: ['name'] }
       ]
     });
     if (!investments) return parseError(404, "Investments not found", next);
