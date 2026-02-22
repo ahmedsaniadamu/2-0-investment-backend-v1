@@ -135,11 +135,11 @@ export const uploadDocument = async (req, res, next) => {
 export const getInvestorsKycRequests = async (req, res, next) => {
   try {
     const result = await paginate(InvestorKycRequest, req, {
-      searchable: ["name", "email"],
       order: [["createdAt", "DESC"]],
       include: [
         {
           model: Investors, as: "investor",
+          searchable: ["name", "email", "phone_number"],
           attributes: { exclude: ['password', 'index', 'role'] }
         },
       ],
