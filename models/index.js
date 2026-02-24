@@ -11,6 +11,8 @@ import KycDocumentModel from './kyc-document.js'
 import InvestorKycRequestModel from "./investor-kyc-request.js";
 import PermissionModel from "./permission.js";
 import UserPermissionModel from "./userpermission.js";
+import FeedbackModel from "./feedback.js";
+
 
 const env = process.env.NODE_ENV || "development";
 const config = configFile[env];
@@ -33,11 +35,13 @@ const KycDocument = KycDocumentModel(sequelize, Sequelize.DataTypes);
 const InvestorKycRequest = InvestorKycRequestModel(sequelize, Sequelize.DataTypes);
 const Permission = PermissionModel(sequelize, Sequelize.DataTypes);
 const UserPermission = UserPermissionModel(sequelize, Sequelize.DataTypes);
+const Feedback = FeedbackModel(sequelize, Sequelize.DataTypes);
 
-export const db = { 
+
+export const db = {
   sequelize, Sequelize, Investors, InvestorOtps, Plan, Investment,
   Profile, Transaction, KycDocument, InvestorKycRequest, Permission,
-  UserPermission,
+  UserPermission, Feedback
 };
 
 // initialize associations
