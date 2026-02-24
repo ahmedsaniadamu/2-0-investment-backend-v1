@@ -71,6 +71,11 @@ export default (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "permissions"
     });
+    Investor.hasMany(models.Feedback, {
+      foreignKey: 'investorId',
+      as: 'feedbacks',
+      onDelete: 'CASCADE',
+    });
   };
 
   return Investor;

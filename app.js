@@ -13,7 +13,10 @@ import investorKycRoutes from './routes/investor/kycRoutes.js'
 import adminPermissionRoutes from './routes/admin/permissionRoutes.js'
 import investorDashboardRoutes from './routes/investor/dashboardRoutes.js'
 import adminUsersRoutes from './routes/admin/usersRoutes.js'
+import feedbackRoutes from './routes/investor/feedbackRoutes.js'
+import adminFeedbackRoutes from './routes/admin/feedbackRoutes.js'
 import uploadRoutes from './routes/shared/fileUploadRoutes.js'
+
 import cors from "cors";
 import { getPlans } from "./controllers/planController.js";
 import isAdmin from "./middleware/isAdmin.js";
@@ -26,6 +29,7 @@ import dotenv from "dotenv";
 import compression from "compression";
 import { stripeWebhook } from "./webhook/stripe.js";
 import { verifyInvestorAccount } from "./controllers/transactionController.js";
+import { sendContactEmail } from "./controllers/supportAndFeedbackController.js";
 
 dotenv.config();
 
@@ -55,9 +59,9 @@ app.use(compression());
 //-----------------//
 app.use(express.json({ limit: '2mb' }));
 
-
 // unaunthenticated routes
 app.get('/api/v1/plans', getPlans)
+app.post("/api/v1/contact-us", sendContactEmail);
 app.get("/api/v1/verify-account/:investmentId/:investorId", verifyInvestorAccount);
 //unauthenticated routes end
 app.use("/api/v1/auth", authRoutes);
@@ -68,6 +72,8 @@ app.use('/api/v1/investor/investments', isAuth, isInvestor, investmentRoutes);
 app.use('/api/v1/investor/transactions', isAuth, isInvestor, transactionRoutes);
 app.use('/api/v1/investor/profile', isAuth, isInvestor, profileRoutes);
 app.use('/api/v1/investor/kyc', isAuth, isInvestor, investorKycRoutes);
+app.use('/api/v1/investor/feedback', isAuth, isInvestor, feedbackRoutes);
+
 //admin routes
 app.use("/api/v1/admin/plans", isAuth, isAdmin, plansRoutes);
 app.use('/api/v1/admin/investments', isAuth, isAdmin, adminInvestmentRoutes);
@@ -77,6 +83,8 @@ app.use('/api/v1/admin/kyc-management', isAuth, isAdmin, adminKycRoutes);
 app.use('/api/v1/admin/dashboard', isAuth, isAdmin, adminDashboardRoutes);
 app.use('/api/v1/admin/permission', isAuth, isAdmin, adminPermissionRoutes);
 app.use('/api/v1/admin/users', isAuth, isAdmin, adminUsersRoutes);
+app.use('/api/v1/admin/feedback', isAuth, isAdmin, adminFeedbackRoutes);
+
 // global error handler
 app.use(errorHandler);
 app.listen(process.env.SERVER_PORT, () => console.log(`Server running on port ${process.env.SERVER_PORT}`));
