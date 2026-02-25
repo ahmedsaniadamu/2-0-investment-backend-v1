@@ -65,9 +65,11 @@ export default (sequelize, DataTypes) => {
     });
     InvestorTransaction.belongsTo(models.Investors, {
       foreignKey: "investorId",
+      as: "Investor",
     });
     InvestorTransaction.belongsTo(models.Plan, {
       foreignKey: "planId",
+      as: "Plan",
     });
   };
 

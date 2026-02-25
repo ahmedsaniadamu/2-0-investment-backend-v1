@@ -78,10 +78,14 @@ export const getTransactions = async (req, res, next) => {
         {
           model: Investors,
           attributes: ["name", "email"],
+          searchable: ["name", "email"],
+          as: "Investor",
         },
         {
           model: Plan,
           attributes: ["name", "roi"],
+          searchable: ["name"],
+          as: "Plan",
         },
       ],
     });
@@ -97,10 +101,12 @@ export const getTransactionById = async (req, res, next) => {
       include: [
         {
           model: Investors,
-          attributes: { exclude: ['password'] }
+          attributes: { exclude: ['password'] },
+          as: "Investor"
         },
         {
           model: Plan,
+          as: "Plan"
         },
       ],
     });
