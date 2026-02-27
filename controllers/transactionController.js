@@ -243,7 +243,7 @@ export const reviewTransaction = async (req, res, next) => {
           //   destination: profile.stripeAccountId,
           // });
 
-          //console.log("Transfer successful:", transfer.id);
+          //console.log("Transfer successful:", transfer.id)
 
           await transaction.update({ status, isPayout: true });
           await investment.update({ status: 'completed' });
