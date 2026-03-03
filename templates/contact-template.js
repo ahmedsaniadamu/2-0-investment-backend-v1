@@ -4,11 +4,13 @@ export const contactEmailTemplate = `
     <mj-section padding="20px 0">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
+          height="100px"
           alt="2Zero Investment Logo"
           align="center"
-        />
+          border-radius="50%"
+        />              
       </mj-column>
     </mj-section>
     <mj-section background-color="#ffffff" border-radius="8px" padding="40px 30px" box-shadow="0 4px 12px rgba(0,0,0,0.1)">

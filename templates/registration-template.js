@@ -4,11 +4,12 @@ export const registrationEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
         <mj-text font-size="38px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
           Hello {{name}},
@@ -35,11 +36,12 @@ export const resendOtpEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
         <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
           Hello {{name}},
@@ -65,11 +67,12 @@ export const forgotPasswordEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
         <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
           Hello {{name}},

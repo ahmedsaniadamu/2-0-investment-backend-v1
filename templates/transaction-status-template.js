@@ -6,11 +6,12 @@ export const transactionFailedEmailTemplate = `
       <mj-column>
         <!-- Logo -->
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
 
         <!-- Greeting -->
@@ -103,11 +104,12 @@ export const transactionCanceledEmailTemplate = `
       <mj-column>
         <!-- Logo -->
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
 
         <!-- Greeting -->
@@ -203,11 +205,12 @@ export const transactionRejectedEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
         <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
           Hello {{name}},
@@ -234,11 +237,12 @@ export const transactionApprovedEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
         <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
           Hello {{name}},
@@ -264,11 +268,12 @@ export const transactionPendingEmailTemplate = `
     <mj-section padding="20px">
       <mj-column>
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
         <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
           Hello {{name}},
@@ -295,11 +300,12 @@ export const investorOnboardingEmailTemplate = `
       <mj-column>
         <!-- Logo -->
         <mj-image 
-          src="https://i.imgur.com/19FXl2n.png" 
+          src="https://i.imgur.com/XA6xh1o.png"
           width="100px" 
-          height="100px" 
-          alt="Logo"
+          height="100px"
+          alt="2Zero Investment Logo"
           align="center"
+          border-radius="50%"
         />
 
         <!-- Greeting -->
