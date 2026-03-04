@@ -1,3 +1,4 @@
+import { paginate } from "../helpers/pagination.js";
 import { parseError } from "../helpers/parseError.js";
 import { db } from "../models/index.js";
 import { sendMail } from "../services/authService.js";
@@ -60,6 +61,35 @@ export const getAllFeedbacks = async (req, res, next) => {
         return res.status(200).json(feedbacks);
     } catch (error) {
         console.error("Error fetching all feedbacks:", error);
+        return parseError(500, "Internal server error.", next);
+    }
+};
+
+export const getLandingPageFeedbacks = async (req, res, next) => {
+    try {
+        const feedbacks = await Feedback.findAll({
+            include: [
+                {
+                    model: Investors,
+                    as: 'investor',
+                    attributes: ['id', 'name'],
+                }
+            ],
+            order: [['rating', 'DESC']],
+            limit: 10
+        });
+        const uniqueFeedbacks = [];
+        const seenInvestors = new Set();
+        for (const feedback of feedbacks) {
+            if (!seenInvestors.has(feedback.investorId)) {
+                uniqueFeedbacks.push(feedback);
+                seenInvestors.add(feedback.investorId);
+            }
+            if (uniqueFeedbacks.length === 10) break;
+        }
+        return res.status(200).json(uniqueFeedbacks);
+    } catch (error) {
+        console.error("Error fetching landing page feedbacks:", error);
         return parseError(500, "Internal server error.", next);
     }
 };

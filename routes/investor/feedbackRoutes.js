@@ -1,8 +1,7 @@
 import express from 'express';
+import { createFeedback } from '../../controllers/supportAndFeedbackController.js';
 const router = express.Router();
-import { createFeedback, getInvestorFeedbacks } from '../../controllers/supportAndFeedbackController.js';
 
 router.post("/", createFeedback);
-router.get("/:investorId", getInvestorFeedbacks);
 
 export default router;

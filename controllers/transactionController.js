@@ -3,6 +3,7 @@ import { db } from "../models/index.js";
 import { Op } from "sequelize";
 import { sendMail } from "../services/authService.js";
 import { transactionApprovedEmailTemplate, transactionRejectedEmailTemplate, investorOnboardingEmailTemplate } from "../templates/transaction-status-template.js";
+import { investmentPayoutSuccessEmailTemplate } from "../templates/investment-template.js";
 import { parseError } from "../helpers/parseError.js";
 import stripe from "../config/stripe.js";
 import dotenv from "dotenv";
@@ -349,6 +350,23 @@ export const processPayout = async (req, res, next) => {
     console.log("Transfer successful:", transfer.id);
     await transaction.update({ payoutStatus: 'success', isPayout: true });
     await investment.update({ status: 'completed', paymentStatus: 'paid' });
+    // Send Payout Success Email
+    await sendMail({
+      fields: {
+        name: investor?.dataValues?.name || investor?.name || '',
+        planName: plan?.name || '',
+        investedAmount: `$${parseFloat(investment?.amount).toLocaleString()}`,
+        roi: averageRoi(),
+        totalPayout: `$${(withdrawalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        paymentMethod: transaction.paymentMethod || 'Stripe',
+        feedbackLink: `${process.env.FEEDBACK_PAGE}?investmentId=${investment.id}&investorId=${investor.id}`,
+        dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login`,
+        email: investor.email
+      },
+      subject: "Investment Payout Status - 2Zero Investment",
+      template: investmentPayoutSuccessEmailTemplate
+    });
+
     return res.status(200).json({ success: true, data: transaction, message: `Investment payout with transfer id ${transfer.id} processed successfully` });
   } catch (stripeError) {
     console.log(stripeError);

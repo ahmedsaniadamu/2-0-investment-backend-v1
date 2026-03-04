@@ -29,30 +29,32 @@ export const PERMISSIONS = {
         }
     },
     INVESTMENTS: {
-        VIEW: "view_investments", 
+        VIEW: "view_investments",
         REVIEW: "review_investments",
     },
     INVESTORS: {
-      VIEW: "view_investors",
-      VIEW_INVESTMENTS: "view_investors_investments",
-      VIEW_TRANSACTIONS: "view_investors_transactions",
-      VIEW_PROFILE: "view_investors_profile",
+        VIEW: "view_investors",
+        VIEW_INVESTMENTS: "view_investors_investments",
+        VIEW_TRANSACTIONS: "view_investors_transactions",
+        VIEW_PROFILE: "view_investors_profile",
+        VIEW_FEEDBACKS: "view_investors_feedbacks",
+        DELETE_FEEDBACK: "delete_investor_feedback",
     },
-    TRANSACTIONS:{
-      VIEW: "view_transactions",
-      REVIEW: "review_transactions",
-      VIEW_DEPOSITS: "view_transactions_deposits",
-      VIEW_WITHDRAWALS: "view_transactions_withdrawals",
-      VIEW_TRANSACTION_INFO: "view_transactions_info",
-      APPROVE_WITHDRAWAL: "approve_withdrawal",
-      REJECT_WITHDRAWAL: "reject_withdrawal",
-      APPROVE_DEPOSIT: "approve_deposit",
-      REJECT_DEPOSIT: "reject_deposit",
+    TRANSACTIONS: {
+        VIEW: "view_transactions",
+        REVIEW: "review_transactions",
+        VIEW_DEPOSITS: "view_transactions_deposits",
+        VIEW_WITHDRAWALS: "view_transactions_withdrawals",
+        VIEW_TRANSACTION_INFO: "view_transactions_info",
+        APPROVE_WITHDRAWAL: "approve_withdrawal",
+        REJECT_WITHDRAWAL: "reject_withdrawal",
+        APPROVE_DEPOSIT: "approve_deposit",
+        REJECT_DEPOSIT: "reject_deposit",
     },
-    PLANS:{
-      VIEW: "view_plans",
-      CREATE: "create_plan",
-      UPDATE: "update_plan",
+    PLANS: {
+        VIEW: "view_plans",
+        CREATE: "create_plan",
+        UPDATE: "update_plan",
 
     }
 };
