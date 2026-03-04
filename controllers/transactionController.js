@@ -359,7 +359,7 @@ export const processPayout = async (req, res, next) => {
         roi: averageRoi(),
         totalPayout: `$${(withdrawalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
         paymentMethod: transaction.paymentMethod || 'Stripe',
-        feedbackLink: `${process.env.FEEDBACK_PAGE}?investmentId=${investment.id}&investorId=${investor.id}`,
+        feedbackLink: `${process.env.FEEDBACK_PAGE}?investorId=${investor.id}`,
         dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login`,
         email: investor.email
       },
