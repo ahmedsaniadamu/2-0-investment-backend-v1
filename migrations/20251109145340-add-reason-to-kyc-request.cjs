@@ -3,8 +3,8 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('InvestorKycRequests', 'reason', {
-      type: Sequelize.STRING,
-      allowNull: true,  
+      type: Sequelize.TEXT,
+      allowNull: true,
     });
   },
 

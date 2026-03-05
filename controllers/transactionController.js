@@ -136,10 +136,11 @@ export const reviewTransaction = async (req, res, next) => {
     const commonFields = {
       name: investor?.dataValues?.name?.split(' ')[0] || '',
       transactionType: transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1),
-      amount: parseFloat(transaction.amount).toLocaleString(),
+      amount: `$${transaction.amount}`,
       date: new Date(transaction.createdAt).toLocaleDateString(),
       transactionId: transaction.transactionId,
       supportEmail: process.env.SUPPORT_EMAIL,
+      email: investor.email,
     };
 
     if (status === 'rejected') {

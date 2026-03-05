@@ -26,7 +26,7 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     },
     reason: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     isWithdrawalRequest: {

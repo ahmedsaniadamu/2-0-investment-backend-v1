@@ -94,6 +94,9 @@ export const stripeWebhook = (app) => {
                             await sendMail({
                                 fields: {
                                     name: investor.name || '',
+                                    transactionType: 'deposit',
+                                    amount: Number(amount) / 100,
+                                    date: new Date().toISOString(),
                                     transactionId: transactionId,
                                     email: investor.email,
                                     dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
@@ -115,6 +118,9 @@ export const stripeWebhook = (app) => {
                                     transactionId: transactionId,
                                     email: investor.email,
                                     reason,
+                                    transactionType: 'deposit',
+                                    amount: Number(amount) / 100,
+                                    date: new Date().toISOString(),
                                     dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
                                     supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
                                     supportEmail: process.env.SUPPORT_EMAIL,

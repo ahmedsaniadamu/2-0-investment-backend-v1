@@ -21,9 +21,13 @@ export default (sequelize, DataTypes) => {
       defaultValue: "pending",
     },
     documents: {
-      type: DataTypes.JSONB, 
+      type: DataTypes.JSONB,
       allowNull: false,
       defaultValue: [],
+    },
+    reason: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   });
 

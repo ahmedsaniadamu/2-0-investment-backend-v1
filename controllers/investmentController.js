@@ -211,6 +211,7 @@ export const requestWithdrawal = async (req, res, next) => {
     const existingWithdrawalRequest = await Transaction.findOne({ where: { investmentId: id, isWithdrawalRequest: true, type: "withdraw" } });
     if (existingWithdrawalRequest) return parseError(400, "Withdrawal request already exists, please wait for review", next);
     //create transaction for withdrawal
+    const investor = await Investors.findOne({ where: { id: transaction.investorId } });
     const { id: txn, reason, createAt, updatedAt, ...rest } = transaction?.dataValues
 
     const withdrawalTxn = await Transaction.create({
@@ -222,10 +223,11 @@ export const requestWithdrawal = async (req, res, next) => {
     await sendMail({
       fields: {
         name: investor?.dataValues?.name?.split(' ')[0] || investor?.name?.split(' ')[0] || '',
+        email: investor?.dataValues?.email || investor?.email || '',
         transactionType: "Withdrawal",
         amount: withdrawalAmount.toLocaleString(),
         date: new Date().toLocaleDateString(),
-        transactionId: withdrawalTxn.id, // Using DB id as fallback
+        transactionId: withdrawalTxn.id,
         supportEmail: process.env.SUPPORT_EMAIL
       },
       subject: "Your Transaction is Being Processed",

@@ -28,7 +28,7 @@ export const transactionPendingEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -97,7 +97,7 @@ export const transactionApprovedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -163,7 +163,7 @@ export const transactionFailedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -237,7 +237,7 @@ export const transactionCanceledEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -287,9 +287,6 @@ export const transactionRejectedEmailTemplate = `
         <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
           We've reviewed your transaction request, but unfortunately, we're unable to process it at this time.
         </mj-text>
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
-          <strong>Reason:</strong> {{{reason}}}
-        </mj-text>
         <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
           Transaction Details:
         </mj-text>
@@ -300,7 +297,7 @@ export const transactionRejectedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
