@@ -2,7 +2,7 @@ import { paginate } from "../helpers/pagination.js";
 import { db } from "../models/index.js";
 import { Op } from "sequelize";
 import { sendMail } from "../services/authService.js";
-import { transactionApprovedEmailTemplate, transactionRejectedEmailTemplate, investorOnboardingEmailTemplate } from "../templates/transaction-status-template.js";
+import { transactionApprovedEmailTemplate, transactionRejectedEmailTemplate, transactionPendingEmailTemplate, transactionFailedEmailTemplate, transactionCanceledEmailTemplate, investorOnboardingEmailTemplate } from "../templates/transaction-status-template.js";
 import { investmentPayoutSuccessEmailTemplate } from "../templates/investment-template.js";
 import { parseError } from "../helpers/parseError.js";
 import stripe from "../config/stripe.js";
@@ -129,91 +129,112 @@ export const reviewTransaction = async (req, res, next) => {
       return parseError(404, "Transaction not found", next);
     }
     const investor = await Investors.findByPk(transaction.investorId);
-    const { status } = req.body;
+    const { status, reason } = req.body;
+
+    if (!status) return parseError(400, "Status is required", next);
+
+    const commonFields = {
+      name: investor?.dataValues?.name?.split(' ')[0] || '',
+      transactionType: transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1),
+      amount: parseFloat(transaction.amount).toLocaleString(),
+      date: new Date(transaction.createdAt).toLocaleDateString(),
+      transactionId: transaction.transactionId,
+      supportEmail: process.env.SUPPORT_EMAIL,
+    };
+
     if (status === 'rejected') {
-      const { reason } = req.body;
       if (!reason) return parseError(400, "Reason for rejection is required", next);
       await transaction.update({ reason, status });
       await Investment.update({ status: 'cancelled' }, { where: { id: transaction.investmentId } });
       await sendMail({
         fields: {
-          name: investor?.dataValues?.name || '',
+          ...commonFields,
           reason,
-          transactionId: transaction?.transactionId, email: investor.email,
-          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
-          dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
+          actionSteps: "Please review your transaction details and resubmit. Ensure your account has sufficient funds."
         },
-        subject: "Transaction Rejected - 2Zero Investment",
+        subject: "Transaction Review Update",
         template: transactionRejectedEmailTemplate
       });
+      return res.status(200).json({ success: true, data: transaction });
     }
-    else {
+
+    if (status === 'canceled') {
+      await transaction.update({ status });
+      await Investment.update({ status: 'cancelled' }, { where: { id: transaction.investmentId } });
+      await sendMail({
+        fields: commonFields,
+        subject: "Transaction Review Update",
+        template: transactionCanceledEmailTemplate
+      });
+      return res.status(200).json({ success: true, data: transaction });
+    }
+
+    if (status === 'failed') {
+      await transaction.update({ status, reason });
+      await sendMail({
+        fields: {
+          ...commonFields,
+          reason: reason || "Technical error during processing"
+        },
+        subject: "Transaction Update",
+        template: transactionFailedEmailTemplate
+      });
+      return res.status(200).json({ success: true, data: transaction });
+    }
+
+    if (status === 'approved' || status === 'active') {
       const investment = await Investment.findOne({ where: { id: transaction.investmentId } });
       if (transaction?.type === 'deposit') {
-        await transaction.update({ status });
+        await transaction.update({ status: 'approved' });
         await investment.update({ status: 'active' });
+        const plan = await Plan.findByPk(transaction.planId);
         await sendMail({
           fields: {
-            name: investor?.dataValues?.name || '',
-            transactionId: transaction?.transactionId, email: investor.email,
-            dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
+            ...commonFields,
+            planName: plan?.name || '',
+            dashboardUrl: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
           },
-          subject: "Transaction Approved - 2Zero Investment",
+          subject: "Transaction Review Update",
           template: transactionApprovedEmailTemplate
         });
-        res.status(200).json({ success: true, data: transaction });
+        return res.status(200).json({ success: true, data: transaction });
       }
+
       if (transaction?.type === 'withdraw') {
         const profile = await Profile.findOne({ where: { investorId: transaction.investorId } });
         const plan = await Plan.findOne({ where: { id: transaction.planId } });
         if (!plan) {
           return parseError(404, "Investment plan not found", next);
         }
+
         const isTimelineCompleted = () => {
           const startDate = new Date(investment.startDate);
           const currentDate = new Date();
-          // Calculate end date (1 year from start)
           const endDate = new Date(startDate);
           endDate.setFullYear(endDate.getFullYear() + 1);
-          // Format expected withdrawal date
-          const expectedWithdrawalDate = endDate.toLocaleDateString()
-          if (currentDate.getTime() > new Date(expectedWithdrawalDate).getTime()) {
-            return true
-          }
-          return false
+          const expectedWithdrawalDate = endDate.toLocaleDateString();
+          return currentDate.getTime() > new Date(expectedWithdrawalDate).getTime();
         };
-
 
         if (!isTimelineCompleted()) {
           return parseError(400, "Withdrawal is only allowed after one year from the plan start date", next);
         }
+
         const investorKycRequest = await InvestorKycRequest.findOne({ where: { investorId: transaction.investorId } });
         if (!investorKycRequest || investorKycRequest.status !== 'approved') {
           return parseError(403, "Investor KYC verification is required before processing withdrawal", next);
         }
+
         if (!profile.stripeAccountId) {
           return parseError(403, "Investor must have a Stripe Connect account to process withdrawal", next);
         }
 
-        const averageRoi = () => {
-          const [min, max] = plan?.roi
-            ?.replace("%", "")
-            .split("-")
-            .map(Number);
-          const avgRoi = (min + max) / 2;
-          return Number(avgRoi.toFixed(2));
-        }
-
-        const withdrawalAmount =
-          parseFloat(investment?.amount) +
-          ((parseFloat(investment?.amount) * averageRoi()) / 100);
-
         try {
-          //check if account exists
           const account = await stripe.accounts.retrieve(profile.stripeAccountId);
           if (!account) {
             return parseError(404, "Account not found.", next);
           }
+
           if (account.capabilities.transfers !== 'active') {
             const accountLink = await stripe.accountLinks.create({
               account: profile.stripeAccountId,
@@ -223,38 +244,31 @@ export const reviewTransaction = async (req, res, next) => {
             });
             await sendMail({
               fields: {
-                name: investor?.dataValues?.name || '',
+                name: investor?.dataValues?.name?.split(' ')[0] || '',
                 onboardingLink: accountLink.url,
-                //supportLink: "http://localhost:7000/investor/contact-support",
-                email: investor.email
+                email: investor.email,
+                supportEmail: process.env.SUPPORT_EMAIL,
               },
-              subject: "Complete Your Investor Onboarding - 2Zero Investment",
+              subject: "Complete Your Investor Onboarding",
               template: investorOnboardingEmailTemplate
             });
             await investment.update({ onboardingLink: accountLink.url });
             await profile.update({ accountStatus: 'pending' });
+          } else {
+            await profile.update({ accountStatus: 'active' });
           }
-          if (account.capabilities.transfers === 'active') {
-            profile.update({ accountStatus: 'active' });
-          }
-          //pay customer to stripe connect account
-          // const transfer = await stripe.transfers.create({
-          //   amount: 100 /*withdrawalAmount * 100 */,
-          //   currency: "usd",
-          //   destination: profile.stripeAccountId,
-          // });
 
-          //console.log("Transfer successful:", transfer.id)
-
-          await transaction.update({ status, isPayout: true });
+          await transaction.update({ status: 'approved', isPayout: true });
           await investment.update({ status: 'completed' });
           return res.status(200).json({ success: true, data: transaction, message: "Withdrawal request approved successfully" });
         } catch (stripeError) {
           console.log(stripeError);
-          return parseError(500, "Failed to credit Stripe Connect account" + stripeError, next);
+          return parseError(500, "Failed to credit Stripe Connect account: " + stripeError.message, next);
         }
       }
     }
+
+    return parseError(400, "Invalid status or transaction type", next);
   } catch (error) {
     next(error);
   }
@@ -361,9 +375,10 @@ export const processPayout = async (req, res, next) => {
         paymentMethod: transaction.paymentMethod || 'Stripe',
         feedbackLink: `${process.env.FEEDBACK_PAGE}?investorId=${investor.id}`,
         dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login`,
-        email: investor.email
+        email: investor.email,
+        supportEmail: process.env.SUPPORT_EMAIL,
       },
-      subject: "Investment Payout Status - 2Zero Investment",
+      subject: "Investment Payout Status",
       template: investmentPayoutSuccessEmailTemplate
     });
 

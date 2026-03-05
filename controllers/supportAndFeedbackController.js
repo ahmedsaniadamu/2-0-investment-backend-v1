@@ -148,7 +148,8 @@ export const sendContactEmail = async (req, res, next) => {
                 name,
                 email,
                 subject,
-                message
+                message,
+                supportEmail: process.env.SUPPORT_EMAIL
             }
         });
 

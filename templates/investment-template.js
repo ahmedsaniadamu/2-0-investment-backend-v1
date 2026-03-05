@@ -2,95 +2,64 @@ export const investmentPayoutSuccessEmailTemplate = `
 <mjml>
   <mj-body background-color="#f9f9f9">
     <mj-section padding="20px">
-      <mj-column>
-        <!-- Logo -->
+      <mj-column background-color="#ffffff" padding="40px">
         <mj-image 
           src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
+          width="80px" 
+          height="80px"
           alt="2Zero Investment Logo"
-          align="center"
+          align="left"
+          padding="0"
           border-radius="50%"
         />
-
-        <!-- Greeting -->
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
           Congratulations, {{name}}!
         </mj-text>
-
-        <!-- Main Message -->
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#5cb85c" padding="10px 0">
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
           Your investment payout has been successfully processed!
         </mj-text>
-
-        <!-- Success Details Section -->
-        <mj-section background-color="#ffffff" border-radius="8px" padding="20px">
-          <mj-column>
-            <mj-text font-size="20px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" color="#002560ff" align="center" padding-bottom="20px">
-              Payout Details
-            </mj-text>
-            <mj-table font-size="15px" font-family="Helvetica, Arial, sans-serif" color="#333333">
-              <tr style="border-bottom:1px solid #ecedee; text-align:left; padding:15px 0;">
-                <th style="padding: 10px 0;">Plan Name</th>
-                <td style="padding: 10px 0; text-align:right;">{{planName}}</td>
-              </tr>
-              <tr style="border-bottom:1px solid #ecedee; text-align:left; padding:15px 0;">
-                <th style="padding: 10px 0;">Invested Amount</th>
-                <td style="padding: 10px 0; text-align:right;">{{investedAmount}}</td>
-              </tr>
-              <tr style="border-bottom:1px solid #ecedee; text-align:left; padding:15px 0;">
-                <th style="padding: 10px 0;">ROI Earned</th>
-                <td style="padding: 10px 0; text-align:right;">{{roi}}%</td>
-              </tr>
-              <tr style="border-bottom:1px solid #ecedee; text-align:left; padding:15px 0;">
-                <th style="padding: 10px 0;">Total Payout</th>
-                <td style="padding: 10px 0; text-align:right; font-weight:bold; color:#5cb85c;">{{totalPayout}}</td>
-              </tr>
-              <tr style="text-align:left; padding:15px 0;">
-                <th style="padding: 10px 0;">Payment Method</th>
-                <td style="padding: 10px 0; text-align:right;">{{paymentMethod}}</td>
-              </tr>
-            </mj-table>
-          </mj-column>
-        </mj-section>
-
-        <!-- Message -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          Your funds have been transferred to your connected account. Please allow 1-3 business days for the funds to reflect in your bank statement, depending on your bank's processing time.
-          <br/><br/>
-          We are thrilled to have been part of your wealth creation journey. Your trust in 2Zero Investment is what drives us to provide the best investment opportunities in the market.
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          Payout Details:
         </mj-text>
-
-        <!-- Feedback & Next Steps -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-           We believe that your feedback will help us improve our services and provide you with a better investment experience.
-           please click on the button below to share your feedback. 
+        <mj-table font-size="14px" color="#333333" cellpadding="6" cellspacing="0" width="100%">
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Plan Name</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{planName}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Invested Amount</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{investedAmount}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>ROI Earned</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{roi}}%</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Total Payout</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee; font-weight:bold; color:#5cb85c;">{{totalPayout}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Payment Method</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{paymentMethod}}</td>
+          </tr>
+        </mj-table>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 15px 0" line-height="1.5">
+          Your funds have been transferred to your connected account. Please allow 1-3 business days for the funds to reflect in your bank statement.
         </mj-text>
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{feedbackLink}}" align="center" border-radius="4px" padding="10px 20px">
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          We are thrilled to have been part of your wealth creation journey. Your trust in 2Zero Investment is what drives us to provide the best opportunities in the market.
+        </mj-text>
+        <mj-button background-color="#002560" color="#ffffff" href="{{feedbackLink}}" align="left" padding="0 0 20px 0">
           Share Feedback
         </mj-button>
-
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="center" color="#555555" padding-top="20px">
-          Ready for your next big move?
+        <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          If you have any questions regarding this payout, please feel free to reach out to our support team at <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>.
         </mj-text>
-
-        <!-- Closing -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          If you have any questions regarding this payout, please feel free to reach out to our support team.<br/><br/>
-          Thank you for choosing 2Zero Investment.<br/><br/>
-          Best regards,<br/>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0" line-height="1.5">
           The 2Zero Investment Team
-        </mj-text>
-
-      </mj-column>
-    </mj-section>
-
-    <!-- Footer -->
-    <mj-section background-color="#f0f0f0" padding="15px">
-      <mj-column>
-        <mj-text font-size="12px" font-family="Helvetica, Arial, sans-serif" align="center" color="#666666">
-          © 2026 2Zero Investment. All rights reserved.<br/>
-          This is an automated message, please do not reply directly.
         </mj-text>
       </mj-column>
     </mj-section>

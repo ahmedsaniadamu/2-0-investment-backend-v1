@@ -96,9 +96,10 @@ export const stripeWebhook = (app) => {
                                     name: investor.name || '',
                                     transactionId: transactionId,
                                     email: investor.email,
-                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
+                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
+                                    supportEmail: process.env.SUPPORT_EMAIL,
                                 },
-                                subject: "Transaction Successful (2ZeroInvestment)",
+                                subject: "Transaction Review Update",
                                 template: transactionPendingEmailTemplate
                             });
                         });
@@ -116,8 +117,9 @@ export const stripeWebhook = (app) => {
                                     reason,
                                     dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
                                     supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
+                                    supportEmail: process.env.SUPPORT_EMAIL,
                                 },
-                                subject: "Transaction Failed (2ZeroInvestment)",
+                                subject: "Transaction Failed",
                                 template: transactionFailedEmailTemplate
                             });
                         }
@@ -132,9 +134,10 @@ export const stripeWebhook = (app) => {
                                     transactionId: transactionId,
                                     email: investor.email,
                                     supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
-                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
+                                    dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
+                                    supportEmail: process.env.SUPPORT_EMAIL,
                                 },
-                                subject: "Transaction Canceled (2ZeroInvestment)",
+                                subject: "Transaction Canceled",
                                 template: transactionCanceledEmailTemplate
                             });
                         }

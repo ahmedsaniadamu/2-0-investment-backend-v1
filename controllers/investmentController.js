@@ -41,11 +41,14 @@ export const createInvestment = async (req, res, next) => {
 
     await sendMail({
       fields: {
-        name: investor?.dataValues?.name || '',
-        transactionId: transaction?.id, email: investor.email,
-        dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`
+        name: investor?.dataValues?.name?.split(' ')[0] || '',
+        transactionType: transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1),
+        amount: parseFloat(transaction.amount).toLocaleString(),
+        date: new Date(transaction.createdAt).toLocaleDateString(),
+        transactionId: transaction.transactionId || transaction.id,
+        supportEmail: process.env.SUPPORT_EMAIL
       },
-      subject: "Transaction Review Status - 2Zero Investment",
+      subject: "Your Transaction is Being Processed",
       template: transactionPendingEmailTemplate
     });
 
@@ -210,10 +213,23 @@ export const requestWithdrawal = async (req, res, next) => {
     //create transaction for withdrawal
     const { id: txn, reason, createAt, updatedAt, ...rest } = transaction?.dataValues
 
-    await Transaction.create({
+    const withdrawalTxn = await Transaction.create({
       ...rest, isWithdrawalRequest: true, type: "withdraw",
       amount: withdrawalAmount, status: "pending",
       transactionId: null,
+    });
+
+    await sendMail({
+      fields: {
+        name: investor?.dataValues?.name?.split(' ')[0] || investor?.name?.split(' ')[0] || '',
+        transactionType: "Withdrawal",
+        amount: withdrawalAmount.toLocaleString(),
+        date: new Date().toLocaleDateString(),
+        transactionId: withdrawalTxn.id, // Using DB id as fallback
+        supportEmail: process.env.SUPPORT_EMAIL
+      },
+      subject: "Your Transaction is Being Processed",
+      template: transactionPendingEmailTemplate
     });
     await Investment.update({ isWithdrawalSent: true }, { where: { id } });
     res.status(200).json({

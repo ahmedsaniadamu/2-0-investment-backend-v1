@@ -77,15 +77,22 @@ export const resendOtp = async (req, res, next) => {
     }
 
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await InvestorOtps.destroy({ where: { investorId: investor.id } });
 
     await InvestorOtps.create({ investorId: investor.id, otp, expiresAt });
 
     await sendMail({
-      email, user: investor, otp, subject: "Your New OTP Code",
-      template: resendOtpEmailTemplate
+      email,
+      user: investor,
+      otp,
+      subject: "Your New 2zero Verification Code",
+      template: resendOtpEmailTemplate,
+      name: investor.name.split(' ')[0],
+      fields: {
+        supportEmail: process.env.SUPPORT_EMAIL
+      }
     });
     res.status(200).json({ message: `A new OTP has been sent to ${email}` });
   } catch (error) {
@@ -102,7 +109,7 @@ export const forgotPassword = async (req, res, next) => {
     if (!investor) return parseError(404, "Investor not found", next);
 
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await InvestorOtps.destroy({ where: { investorId: investor.id } });
 
@@ -112,8 +119,12 @@ export const forgotPassword = async (req, res, next) => {
       email,
       otp,
       user: investor,
-      subject: "Reset your password - 2Zero Investment",
-      template: forgotPasswordEmailTemplate
+      subject: "Reset Your 2zero Password",
+      template: forgotPasswordEmailTemplate,
+      name: investor.name.split(' ')[0],
+      fields: {
+        supportEmail: process.env.SUPPORT_EMAIL
+      }
     });
     return res.status(200).json({
       user: { id: investor.id, email: investor.email },
@@ -186,11 +197,21 @@ export const signup = async (req, res, next) => {
     });
 
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await InvestorOtps.create({ investorId: user?.dataValues?.id, otp, expiresAt });
 
-    await sendMail({ email, otp, user, template: registrationEmailTemplate });
+    await sendMail({
+      email,
+      otp,
+      user,
+      subject: "Welcome To 2zero! Verify Your Account",
+      template: registrationEmailTemplate,
+      name: name.split(' ')[0],
+      fields: {
+        supportEmail: process.env.SUPPORT_EMAIL
+      }
+    });
     const { id, ...investor } = user?.dataValues
     res.status(201).json({
       message: `Investor account created successfully and OTP sent to ${email} for verification`,
@@ -200,29 +221,6 @@ export const signup = async (req, res, next) => {
     next(error);
   }
 };
-
-// export const login = async (req, res, next) => {
-//     try{
-//       const { email, password } = req.body;
-//       const user = await Investors.findOne({ where: { email } });
-//     if (!user) return parseError(404, 'Invalid email, please sign up if you don\'t have an account', next);
-
-//      const valid = await bcrypt.compare(password, user.password);
-//     if (!valid) return parseError(400, 'Invalid password', next);
-
-//     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//      res.json({ 
-//         message: 'Login successful', 
-//         token, 
-//         user: { 
-//             id: user.id, name: user.name, 
-//             email: user.email, role: user.role,
-//             isVerified: user.isVerified
-//         } });
-//     } catch(error){
-//         next(error);
-//     }
-// }
 
 export const login = async (req, res, next) => {
   try {

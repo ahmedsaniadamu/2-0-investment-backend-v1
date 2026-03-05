@@ -110,9 +110,16 @@ export const createUser = async (req, res, next) => {
         isVerified: true,
       });
       await sendMail({
-        fields: { name, email, password, role: userType },
+        fields: {
+          name: name.split(' ')[0],
+          email,
+          password,
+          role: userType,
+          admin_portal_url: process.env.DASHBOARD_REDIRECT_URL,
+          supportEmail: process.env.SUPPORT_EMAIL
+        },
         template: subAdminOnboardingEmailTemplate,
-        subject: 'Welcome to 2Zero Investment',
+        subject: 'Welcome To The 2zero Admin Team',
       });
       return res.status(201).json({ message: 'User created successfully', user });
     }

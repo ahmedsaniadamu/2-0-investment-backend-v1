@@ -114,12 +114,11 @@ export const uploadDocument = async (req, res, next) => {
       }
       await sendMail({
         fields: {
-          name: investor?.dataValues?.name || '',
+          name: investor?.dataValues?.name?.split(' ')[0] || '',
           email: investor.email,
-          dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-kyc-status`,
-          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`
+          supportEmail: process.env.SUPPORT_EMAIL,
         },
-        subject: "KYC Documents Verification (2Zero Investment)",
+        subject: "KYC Documents Review Update",
         template: kycPendingEmailTemplate
       });
       res.status(200).json({ success: true, message: "Documents uploaded successfully! check your email for further instructions" });
@@ -162,25 +161,24 @@ export const reviewKycRequest = async (req, res, next) => {
       if (!reason) return parseError(400, "Reason for rejection is required", next);
       sendMail({
         fields: {
-          name: investor?.name || '',
+          name: investor?.name?.split(' ')[0] || '',
           reason,
           email: investor?.email,
-          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`,
-          guidelinesLink: `${process.env.GUIDELINES_REDIRECT_URL}/kyc-guidelines`,
+          supportEmail: process.env.SUPPORT_EMAIL,
         },
-        subject: "KYC Request Verification Status (2Zero Investment)",
+        subject: "KYC Documents Review Update",
         template: kycRejectedEmailTemplate
       })
     }
     else {
       sendMail({
         fields: {
-          name: investor?.name || '',
+          name: investor?.name?.split(' ')[0] || '',
           email: investor?.email,
-          dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-kyc-status`,
-          supportLink: `${process.env.SUPPORT_REDIRECT_URL}`
+          loginUrl: `${process.env.DASHBOARD_REDIRECT_URL}/login`,
+          supportEmail: process.env.SUPPORT_EMAIL,
         },
-        subject: "KYC Request Verification Status (2Zero Investment)",
+        subject: "KYC Documents Review Update",
         template: kycApprovedEmailTemplate
       })
     }

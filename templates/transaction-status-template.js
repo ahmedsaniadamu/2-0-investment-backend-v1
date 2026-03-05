@@ -1,95 +1,205 @@
+export const transactionPendingEmailTemplate = `
+<mjml>
+  <mj-body background-color="#f9f9f9">
+    <mj-section padding="20px">
+      <mj-column background-color="#ffffff" padding="40px">
+        <mj-image 
+          src="https://i.imgur.com/XA6xh1o.png"
+          width="80px" 
+          height="80px"
+          alt="2Zero Investment Logo"
+          align="left"
+          padding="0"
+          border-radius="50%"
+        />
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
+          Hi {{name}},
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
+          We've received your transaction request, and it's currently under review.
+        </mj-text>
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          Transaction Details:
+        </mj-text>
+        <mj-table font-size="14px" color="#333333" cellpadding="6" cellspacing="0" width="100%">
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction Type</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionType}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{date}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction ID</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionId}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">Pending Review</td>
+          </tr>
+        </mj-table>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 15px 0" line-height="1.5">
+          We'll notify you once your transaction is processed. This typically takes 24-48 hours.
+        </mj-text>
+        <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          Have any questions? Reach out to us at <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>.
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0" line-height="1.5">
+          The 2zero Team
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+`;
+
+export const transactionApprovedEmailTemplate = `
+<mjml>
+  <mj-body background-color="#f9f9f9">
+    <mj-section padding="20px">
+      <mj-column background-color="#ffffff" padding="40px">
+        <mj-image 
+          src="https://i.imgur.com/XA6xh1o.png"
+          width="80px" 
+          height="80px"
+          alt="2Zero Investment Logo"
+          align="left"
+          padding="0"
+          border-radius="50%"
+        />
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
+          Hi {{name}},
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
+          We are excited to announce that your transaction has been processed successfully.
+        </mj-text>
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          Transaction Details:
+        </mj-text>
+        <mj-table font-size="14px" color="#333333" cellpadding="6" cellspacing="0" width="100%">
+          {{#if planName}}
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Plan</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{planName}}</td>
+          </tr>
+          {{/if}}
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction Type</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionType}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{date}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction ID</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionId}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">Completed</td>
+          </tr>
+        </mj-table>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 15px 0" line-height="1.5">
+          You can view this transaction in your account dashboard anytime.
+        </mj-text>
+        <mj-button background-color="#002560" color="#ffffff" href="{{dashboardUrl}}" align="left" padding="0 0 20px 0">
+          View Dashboard
+        </mj-button>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          Thank you for choosing 2zero!
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0" line-height="1.5">
+          The 2zero Team
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+`;
 
 export const transactionFailedEmailTemplate = `
 <mjml>
   <mj-body background-color="#f9f9f9">
     <mj-section padding="20px">
-      <mj-column>
-        <!-- Logo -->
+      <mj-column background-color="#ffffff" padding="40px">
         <mj-image 
           src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
+          width="80px" 
+          height="80px"
           alt="2Zero Investment Logo"
-          align="center"
+          align="left"
+          padding="0"
           border-radius="50%"
         />
-
-        <!-- Greeting -->
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
-          Hello {{name}},
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
+          Hi {{name}},
         </mj-text>
-
-        <!-- Main Message -->
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#d9534f" padding="10px 0">
-          Unfortunately, your recent transaction (ID: {{transactionId}}) could not be processed successfully.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
+          We weren't able to process your recent transaction. Here are the details:
         </mj-text>
-
-        <!-- Details -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="10px 20px">
-          <strong>Reason:</strong> {{reason}}<br/><br/>
-          We understand that failed transactions can be frustrating. Please review the details below and consider the recommended next steps to resolve the issue.
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          Transaction Details:
         </mj-text>
-
-        <!-- Transaction Info Table -->
         <mj-table font-size="14px" color="#333333" cellpadding="6" cellspacing="0" width="100%">
-          <tr style="background-color:#f0f0f0;">
-            <td><strong>Transaction ID</strong></td>
-            <td>{{transactionId}}</td>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction Type</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionType}}</td>
           </tr>
           <tr>
-            <td><strong>Amount</strong></td>
-            <td>{{amount}}</td>
-          </tr>
-          <tr style="background-color:#f0f0f0;">
-            <td><strong>Payment Method</strong></td>
-            <td>{{paymentMethod}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
           </tr>
           <tr>
-            <td><strong>Date</strong></td>
-            <td>{{date}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{date}}</td>
           </tr>
-          <tr style="background-color:#f0f0f0;">
-            <td><strong>Status</strong></td>
-            <td style="color:#d9534f; font-weight:bold;">Failed</td>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction ID</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionId}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee; color: #d9534f;">Failed</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Reason</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{{reason}}}</td>
           </tr>
         </mj-table>
-
-        <!-- Next Steps -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          <strong>Recommended Actions:</strong>
-          <ul style="margin:10px 0; padding-left:20px;">
-            <li>Verify that your payment details (card number, expiry date, CVV) are correct.</li>
-            <li>Ensure that your account has sufficient funds or credit available.</li>
-            <li>Try using an alternative payment method if available.</li>
-            <li>Contact your bank or card issuer to confirm that the transaction was not blocked.</li>
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 5px 0" line-height="1.5">
+          What you can do:
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          <ul style="margin: 0; padding-left: 20px;">
+            <li>Double-check your payment information</li>
+            <li>Ensure you have sufficient funds</li>
+            <li>Try again or contact your bank if the issue persists</li>
           </ul>
         </mj-text>
-
-        <!-- Support Button -->
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{supportLink}}" align="center" padding="20px">
-          Contact Support
-        </mj-button>
-
-        <!-- Closing -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          If you continue to experience issues, please don’t hesitate to reach out to our support team. We are committed to helping you complete your investment successfully.<br/><br/>
-          Thank you for choosing <strong>2Zero Investment</strong>. We value your trust and look forward to assisting you further.
+        <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          Need help? We're here: <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>
         </mj-text>
-
-        <!-- Signature -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 20px">
-          Warm regards,<br/>
-          <strong>The 2Zero Investment Team</strong>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,
         </mj-text>
-      </mj-column>
-    </mj-section>
-
-    <!-- Footer -->
-    <mj-section background-color="#f0f0f0" padding="15px">
-      <mj-column>
-        <mj-text font-size="12px" font-family="Helvetica, Arial, sans-serif" align="center" color="#666666">
-          © 2026 2Zero Investment. All rights reserved.<br/>
-          This is an automated message, please do not reply directly.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0" line-height="1.5">
+          The 2zero Team
         </mj-text>
       </mj-column>
     </mj-section>
@@ -101,97 +211,55 @@ export const transactionCanceledEmailTemplate = `
 <mjml>
   <mj-body background-color="#f9f9f9">
     <mj-section padding="20px">
-      <mj-column>
-        <!-- Logo -->
+      <mj-column background-color="#ffffff" padding="40px">
         <mj-image 
           src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
+          width="80px" 
+          height="80px"
           alt="2Zero Investment Logo"
-          align="center"
+          align="left"
+          padding="0"
           border-radius="50%"
         />
-
-        <!-- Greeting -->
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
-          Hello {{name}},
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
+          Hi {{name}},
         </mj-text>
-
-        <!-- Main Message -->
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#d9534f" padding="10px 0">
-          Your recent transaction (ID: {{transactionId}}) has been canceled.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
+          Your transaction request has been canceled by our admin team.
         </mj-text>
-
-        <!-- Explanation -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="10px 20px">
-          This cancellation may have occurred due to one of the following reasons:
-          <ul style="margin:10px 0; padding-left:20px;">
-            <li>The payment method was declined or unavailable.</li>
-            <li>The transaction was manually canceled by you or our system.</li>
-            <li>The payment authorization expired before capture.</li>
-          </ul>
-          Please review the details below and consider retrying your transaction if you still wish to proceed.
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          Transaction Details:
         </mj-text>
-
-        <!-- Transaction Info Table -->
         <mj-table font-size="14px" color="#333333" cellpadding="6" cellspacing="0" width="100%">
-          <tr style="background-color:#f0f0f0;">
-            <td><strong>Transaction ID</strong></td>
-            <td>{{transactionId}}</td>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction Type</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionType}}</td>
           </tr>
           <tr>
-            <td><strong>Amount</strong></td>
-            <td>{{amount}}</td>
-          </tr>
-          <tr style="background-color:#f0f0f0;">
-            <td><strong>Payment Method</strong></td>
-            <td>{{paymentMethod}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
           </tr>
           <tr>
-            <td><strong>Date</strong></td>
-            <td>{{date}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{date}}</td>
           </tr>
-          <tr style="background-color:#f0f0f0;">
-            <td><strong>Status</strong></td>
-            <td style="color:#d9534f; font-weight:bold;">Canceled</td>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction ID</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionId}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">Canceled</td>
           </tr>
         </mj-table>
-
-        <!-- Next Steps -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          <strong>Recommended Actions:</strong>
-          <ul style="margin:10px 0; padding-left:20px;">
-            <li>Check your payment details and ensure they are up to date.</li>
-            <li>Try initiating the transaction again with a valid payment method.</li>
-            <li>If you did not intend to cancel, please contact our support team for assistance.</li>
-          </ul>
+        <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 20px 0" line-height="1.5">
+          If you canceled this by mistake or have questions, contact us at <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>.
         </mj-text>
-
-        <!-- Support Button -->
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{supportLink}}" align="center" padding="20px">
-          Contact Support
-        </mj-button>
-
-        <!-- Closing -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          We apologize for any inconvenience caused by this cancellation. Our team is here to help you complete your investment smoothly.<br/><br/>
-          Thank you for choosing <strong>2Zero Investment</strong>. We value your trust and look forward to assisting you further.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,
         </mj-text>
-
-        <!-- Signature -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 20px">
-          Warm regards,<br/>
-          <strong>The 2Zero Investment Team</strong>
-        </mj-text>
-      </mj-column>
-    </mj-section>
-
-    <!-- Footer -->
-    <mj-section background-color="#f0f0f0" padding="15px">
-      <mj-column>
-        <mj-text font-size="12px" font-family="Helvetica, Arial, sans-serif" align="center" color="#666666">
-          © 2026 2Zero Investment. All rights reserved.<br/>
-          This is an automated message, please do not reply directly.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0" line-height="1.5">
+          The 2zero Team
         </mj-text>
       </mj-column>
     </mj-section>
@@ -203,90 +271,69 @@ export const transactionRejectedEmailTemplate = `
 <mjml>
   <mj-body background-color="#f9f9f9">
     <mj-section padding="20px">
-      <mj-column>
+      <mj-column background-color="#ffffff" padding="40px">
         <mj-image 
           src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
+          width="80px" 
+          height="80px"
           alt="2Zero Investment Logo"
-          align="center"
+          align="left"
+          padding="0"
           border-radius="50%"
         />
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
-          Hello {{name}},
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
+          Hi {{name}},
         </mj-text>
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#d9534f" padding="10px 0">
-          We regret to inform you that your recent transaction (ID: {{transactionId}}) has been rejected by our admin team.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
+          We've reviewed your transaction request, but unfortunately, we're unable to process it at this time.
         </mj-text>
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="center" color="#555555" padding="10px 0">
-          Reason: {{reason}}<br/>
-          Please review your submission and try again. If you need assistance, feel free to contact our support team.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
+          <strong>Reason:</strong> {{{reason}}}
         </mj-text>
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{supportLink}}" align="center">
-          Contact Support
-        </mj-button>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-`;
-
-export const transactionApprovedEmailTemplate = `
-<mjml>
-  <mj-body background-color="#f9f9f9">
-    <mj-section padding="20px">
-      <mj-column>
-        <mj-image 
-          src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
-          alt="2Zero Investment Logo"
-          align="center"
-          border-radius="50%"
-        />
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
-          Hello {{name}},
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          Transaction Details:
         </mj-text>
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#5cb85c" padding="10px 0">
-          Great news! Your transaction (ID: {{transactionId}}) has been successfully approved.
+        <mj-table font-size="14px" color="#333333" cellpadding="6" cellspacing="0" width="100%">
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction Type</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionType}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">₦{{amount}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{date}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Transaction ID</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{transactionId}}</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee; color: #d9534f;">Rejected</td>
+          </tr>
+          <tr>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Reason</strong></td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{{reason}}}</td>
+          </tr>
+        </mj-table>
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 5px 0" line-height="1.5">
+          What you can do:
         </mj-text>
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="center" color="#555555" padding="10px 0">
-          You can now view your updated investment portfolio and track your progress in your dashboard.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          {{{actionSteps}}}
         </mj-text>
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{dashboardLink}}" align="center">
-          Go to Dashboard
-        </mj-button>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-`;
-
-export const transactionPendingEmailTemplate = `
-<mjml>
-  <mj-body background-color="#f9f9f9">
-    <mj-section padding="20px">
-      <mj-column>
-        <mj-image 
-          src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
-          alt="2Zero Investment Logo"
-          align="center"
-          border-radius="50%"
-        />
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
-          Hello {{name}},
+        <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          If you believe this was done in error or need clarification, please contact us at <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>.
         </mj-text>
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#f0ad4e" padding="10px 0">
-          Your transaction (ID: {{transactionId}}) is currently under review and pending approval.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,
         </mj-text>
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="center" color="#555555" padding="10px 0">
-          We appreciate your patience. You will receive another update once the review is complete.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0" line-height="1.5">
+          The 2zero Team
         </mj-text>
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{dashboardLink}}" align="center">
-          View Status 
-        </mj-button>
       </mj-column>
     </mj-section>
   </mj-body>
@@ -297,73 +344,47 @@ export const investorOnboardingEmailTemplate = `
 <mjml>
   <mj-body background-color="#f9f9f9">
     <mj-section padding="20px">
-      <mj-column>
-        <!-- Logo -->
+      <mj-column background-color="#ffffff" padding="40px">
         <mj-image 
           src="https://i.imgur.com/XA6xh1o.png"
-          width="100px" 
-          height="100px"
+          width="80px" 
+          height="80px"
           alt="2Zero Investment Logo"
-          align="center"
+          align="left"
+          padding="0"
           border-radius="50%"
         />
-
-        <!-- Greeting -->
-        <mj-text font-size="32px" font-family="Helvetica, Arial, sans-serif" align="center" color="#333333" padding="10px 0">
-          Welcome, {{name}}!
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="30px 0 10px 0">
+          Hi {{name}},
         </mj-text>
-
-        <!-- Main Message -->
-        <mj-text font-size="18px" font-family="Helvetica, Arial, sans-serif" align="center" color="#5cb85c" padding="10px 0">
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
           You're just one step away from completing your investor onboarding.
         </mj-text>
-
-        <!-- Explanation -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="10px 20px">
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 15px 0" line-height="1.5">
           To ensure secure payouts and compliance, we require all investors to complete their onboarding process with our payment partner, <strong>Stripe</strong>. This process is quick and ensures your investment returns can be deposited directly into your bank account.
         </mj-text>
-
-        <!-- Onboarding Button -->
-        <mj-button background-color="#002560ff" color="#ffffff" href="{{onboardingLink}}" align="center" padding="20px">
+        <mj-button background-color="#002560" color="#ffffff" href="{{onboardingLink}}" align="left" padding="0 0 20px 0">
           Complete Onboarding
         </mj-button>
-
-        <!-- Next Steps -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          <strong>What you’ll need:</strong>
-          <ul style="margin:10px 0; padding-left:20px;">
+        <mj-text font-size="16px" font-weight="bold" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 0 5px 0">
+          What you'll need:
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          <ul style="margin: 0; padding-left: 20px;">
             <li>Your full legal name and contact details.</li>
             <li>Bank account information for receiving payouts.</li>
             <li>Any required identification documents for verification.</li>
           </ul>
+        </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
           Once completed, your account will be activated and ready to receive investment returns.
         </mj-text>
-
-        <!-- Closing -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#555555" padding="20px">
-          Thank you for choosing <strong>2Zero Investment</strong>. We value your trust and look forward to helping you grow your investments.<br/><br/>
-          If you encounter any issues during onboarding, please reach out to our support team.
+        <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          If you encounter any issues during onboarding, please reach out to our support team at <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>.
         </mj-text>
-
-        <!-- Support Button -->
-        <mj-button background-color="#5cb85c" color="#ffffff" href="{{supportLink}}" align="center" padding="20px">
-          Contact Support
-        </mj-button>
-
-        <!-- Signature -->
-        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="10px 20px">
-          Warm regards,<br/>
-          <strong>The 2Zero Investment Team</strong>
-        </mj-text>
-      </mj-column>
-    </mj-section>
-
-    <!-- Footer -->
-    <mj-section background-color="#f0f0f0" padding="15px">
-      <mj-column>
-        <mj-text font-size="12px" font-family="Helvetica, Arial, sans-serif" align="center" color="#666666">
-          © 2026 2Zero Investment. All rights reserved.<br/>
-          This is an automated message, please do not reply directly.
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
+          Best regards,<br />
+          The 2zero Team
         </mj-text>
       </mj-column>
     </mj-section>
