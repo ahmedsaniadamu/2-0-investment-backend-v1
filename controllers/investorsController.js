@@ -111,7 +111,7 @@ export const createUser = async (req, res, next) => {
       });
       await sendMail({
         fields: {
-          name: name.split(' ')[0],
+          name: name.split(' ')[0] || name,
           email,
           password,
           role: userType,

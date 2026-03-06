@@ -14,6 +14,7 @@ const { Investors, InvestorOtps, Permission, Profile } = db;
 export const verifyOtp = async (req, res, next) => {
   try {
     const { investorId, otp, type } = req.body;
+    if (!investorId || !otp) return parseError(400, 'Investor ID and OTP are required', next);
     const user = await Investors.findOne({
       where: { id: investorId },
       include: [
@@ -86,12 +87,12 @@ export const resendOtp = async (req, res, next) => {
     await sendMail({
       email,
       user: investor,
-      otp,
       subject: "Your New 2zero Verification Code",
       template: resendOtpEmailTemplate,
-      name: investor.name.split(' ')[0],
       fields: {
-        supportEmail: process.env.SUPPORT_EMAIL
+        supportEmail: process.env.SUPPORT_EMAIL,
+        name: investor.name.split(' ')[0] || name,
+        otp
       }
     });
     res.status(200).json({ message: `A new OTP has been sent to ${email}` });
@@ -117,13 +118,13 @@ export const forgotPassword = async (req, res, next) => {
 
     await sendMail({
       email,
-      otp,
       user: investor,
       subject: "Reset Your 2zero Password",
       template: forgotPasswordEmailTemplate,
-      name: investor.name.split(' ')[0],
       fields: {
-        supportEmail: process.env.SUPPORT_EMAIL
+        supportEmail: process.env.SUPPORT_EMAIL,
+        name: investor.name.split(' ')[0] || name,
+        otp
       }
     });
     return res.status(200).json({
@@ -184,6 +185,7 @@ export const resetPassword = async (req, res, next) => {
 export const signup = async (req, res, next) => {
   try {
     const { name, email, password, role, phone_number } = req.body;
+    if (!name || !email || !password || !phone_number) return parseError(400, "All fields are required", next);
     const hashedPassword = await bcrypt.hash(password, 10);
     const isExist = await Investors.findOne({ where: { email } });
     if (isExist) return parseError(400, 'Investor already exists', next);
@@ -204,12 +206,11 @@ export const signup = async (req, res, next) => {
     await sendMail({
       email,
       otp,
-      user,
       subject: "Welcome To 2zero! Verify Your Account",
       template: registrationEmailTemplate,
-      name: name.split(' ')[0],
       fields: {
-        supportEmail: process.env.SUPPORT_EMAIL
+        supportEmail: process.env.SUPPORT_EMAIL,
+        name: name.split(' ')[0] || name,
       }
     });
     const { id, ...investor } = user?.dataValues
@@ -225,6 +226,7 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) return parseError(400, "All fields are required", next);
     const user = await Investors.findOne({
       where: { email },
       include: [
