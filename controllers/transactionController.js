@@ -136,12 +136,14 @@ export const reviewTransaction = async (req, res, next) => {
     const commonFields = {
       name: investor?.dataValues?.name?.split(' ')[0] || '',
       transactionType: transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1),
-      amount: `$${transaction.amount}`,
+      amount: transaction.amount,
       date: new Date(transaction.createdAt).toLocaleDateString(),
       transactionId: transaction.transactionId,
       supportEmail: process.env.SUPPORT_EMAIL,
       email: investor.email,
     };
+
+    console.log(commonFields);
 
     if (status === 'rejected') {
       if (!reason) return parseError(400, "Reason for rejection is required", next);

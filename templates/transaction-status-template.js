@@ -28,7 +28,7 @@ export const transactionPendingEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">\${{ amount }}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -40,7 +40,7 @@ export const transactionPendingEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">Pending Review</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee; color: #ff9800;">Pending Review</td>
           </tr>
         </mj-table>
         <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 15px 0" line-height="1.5">
@@ -97,7 +97,7 @@ export const transactionApprovedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">\${{ amount }}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -109,7 +109,7 @@ export const transactionApprovedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Status</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">Completed</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee; color: #4caf50;">Approved</td>
           </tr>
         </mj-table>
         <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="20px 0 15px 0" line-height="1.5">
@@ -163,7 +163,7 @@ export const transactionFailedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">\${{ amount }}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -193,7 +193,7 @@ export const transactionFailedEmailTemplate = `
           </ul>
         </mj-text>
         <mj-text font-size="14px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
-          Need help? We're here: <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>
+          Need help? contact our support team: <a href="mailto:{{supportEmail}}" style="color: #002560; text-decoration: none;">{{supportEmail}}</a>
         </mj-text>
         <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 5px 0">
           Best regards,
@@ -237,7 +237,7 @@ export const transactionCanceledEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">\${{ amount }}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>
@@ -297,7 +297,7 @@ export const transactionRejectedEmailTemplate = `
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Amount</strong></td>
-            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">{{amount}}</td>
+            <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;">\${{ amount }}</td>
           </tr>
           <tr>
             <td style="padding: 5px 0; border-bottom: 1px solid #eeeeee;"><strong>Date</strong></td>

@@ -102,7 +102,7 @@ export const stripeWebhook = (app) => {
                                     dashboardLink: `${process.env.DASHBOARD_REDIRECT_URL}/login?action=view-transactions`,
                                     supportEmail: process.env.SUPPORT_EMAIL,
                                 },
-                                subject: "Transaction Review Update",
+                                subject: "Transaction Request Received",
                                 template: transactionPendingEmailTemplate
                             });
                         });
