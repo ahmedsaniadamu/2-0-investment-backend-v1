@@ -49,6 +49,9 @@ export const investmentPayoutSuccessEmailTemplate = `
         <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
           We are thrilled to have been part of your wealth creation journey. Your trust in 2Zero Investment is what drives us to provide the best opportunities in the market.
         </mj-text>
+        <mj-text font-size="16px" font-family="Helvetica, Arial, sans-serif" align="left" color="#333333" padding="0 0 20px 0" line-height="1.5">
+          To help us serve you better, we would love to hear about your experience. Please take a moment to share your feedback.
+        </mj-text>
         <mj-button background-color="#002560" color="#ffffff" href="{{feedbackLink}}" align="left" padding="0 0 20px 0">
           Share Feedback
         </mj-button>

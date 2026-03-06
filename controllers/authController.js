@@ -211,6 +211,7 @@ export const signup = async (req, res, next) => {
       fields: {
         supportEmail: process.env.SUPPORT_EMAIL,
         name: name.split(' ')[0] || name,
+        otp
       }
     });
     const { id, ...investor } = user?.dataValues
