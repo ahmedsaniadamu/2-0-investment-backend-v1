@@ -423,23 +423,22 @@ export const verifyInvestorAccount = async (req, res, next) => {
 
 export const getLoginLink = async (req, res, next) => {
   try {
-    const investmentId = req.params.investmentId
     const investorId = req.params.investorId
-    const investment = await Investment.findOne({ where: { id: investmentId } });
+    const investment = await Investment.findOne({ where: { investorId: investorId } });
     const profile = await Profile.findOne({ where: { investorId: investorId } });
     //accountStatus
     if (!investment) {
-      return parseError(404, "Investment not found", next);
+      return parseError(404, "Investment not found for this investor", next);
     }
     if (!profile?.stripeAccountId) {
-      return parseError(404, "Account profile not found", next);
+      return parseError(404, "Account profile not found for this investor", next);
     }
     const account = await stripe.accounts.retrieve(profile.stripeAccountId);
     if (!account) {
-      return parseError(404, "Account not found.", next);
+      return parseError(404, "Account not found for this investor", next);
     }
     if (account.capabilities.transfers !== 'active') {
-      parseError(403, "Account is not active", next);
+      return parseError(403, "Account is not active for this investor", next);
     }
     const loginLink = await stripe.accounts.createLoginLink(profile.stripeAccountId);
 

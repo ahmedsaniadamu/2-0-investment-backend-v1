@@ -10,6 +10,6 @@ import isInvestor from '../../middleware/isInvestor.js';
 
 router.get("/:id", isAuth, isInvestor, getInvestorTransactions);
 router.get("/summary/:id", isAuth, isInvestor, getTransactionSummary);
-router.get("/get-login-link/:investmentId/:investorId", isAuth, isInvestor, getLoginLink);
+router.get("/get-login-link/:investorId", isAuth, isInvestor, getLoginLink);
 
 export default router;

@@ -108,8 +108,21 @@ export const getInvestorInvestments = async (req, res, next) => {
       ]
     });
     if (!investments) return parseError(404, "Investments not found", next);
+    const profile = await Profile.findOne({ where: { investorId: req.params.id } });
+    let accountCapabilty = null
+    if (profile.stripeAccountId) {
+      const account = await stripe.accounts.retrieve(profile.stripeAccountId);
+      if (account) {
+        accountCapabilty = account.capabilities.transfers
+      }
+    }
+
     let investment = {
-      ...investments, data: investments.data.map((i) => {
+      ...investments,
+      accountInfo: {
+        accountCapabilty,
+      },
+      data: investments.data.map((i) => {
         function updateInvestmentStatus(investment) {
           const startDate = new Date(investment.startDate);
           const today = new Date();
@@ -183,7 +196,7 @@ export const requestWithdrawal = async (req, res, next) => {
     if (!transaction) return parseError(404, "Transaction not found", next);
     if (transaction?.dataValues?.status !== 'approved') return parseError(400, "Transaction is not approved for this investment", next);
     const kycStatus = await InvestorKycRequest.findOne({ where: { investorId: transaction.investorId } });
-    if (!kycStatus) return parseError(404, "Kyc not found", next);
+    if (!kycStatus) return parseError(404, "Kyc not found for this investor  please complete kyc first", next);
     if (kycStatus.status !== "approved") return parseError(400, "Kyc not approved yet. Please complete kyc first", next);
     const investment = await Investment.findOne({ where: { id }, include: [{ model: Plan, as: "plan" }] });
     if (!investment) return parseError(404, "Investment not found", next);
