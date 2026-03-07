@@ -2,6 +2,9 @@ import { db } from "../models/index.js";
 import bcrypt from 'bcrypt';
 import { parseError } from "../helpers/parseError.js";
 import stripe from '../config/stripe.js';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { Profile, Investors, InvestorKycRequest } = db;
 
@@ -62,6 +65,11 @@ export const updateProfile = async (req, res, next) => {
           type: "express",
           email: investor.email,
           country: investor.country || "US",
+          business_profile: {
+            name: investor?.name,
+            url: process.env.PLATFORM_URL,
+            support_phone: investor?.phone_number
+          },
           capabilities: {
             transfers: { requested: true },
           },
